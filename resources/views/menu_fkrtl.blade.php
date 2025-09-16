@@ -5,7 +5,7 @@
 @section('content')
     <div class="card shadow">
         <div class="card-body">
-            <h3 class="mb-4">Pilih Nama FKRTL</h3>
+            <h3 class="mt-4">Pilih Nama FKRTL</h3>
             
             <form method="GET" action="{{ route('fkrtl.index') }}" class="mb-4">
                 <div class="input-group">

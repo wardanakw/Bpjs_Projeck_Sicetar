@@ -23,16 +23,26 @@
             display: flex;
             flex-direction: column;
             height: 100vh;
-            position: sticky;
+            position: fixed;
             top: 0;
             left: 0;
-            z-index: 100;
+            z-index: 1000;
+            transition: width 0.3s;
+        }
+        .sidebar.collapsed {
+            width: 70px;
         }
         .sidebar h2 {
             text-align: center;
             padding: 20px 0;
             font-size: 20px;
             border-bottom: 1px solid rgba(255,255,255,0.1);
+            white-space: nowrap;
+            overflow: hidden;
+        }
+        .sidebar.collapsed h2 {
+            font-size: 16px;
+            padding: 20px 5px;
         }
         .sidebar ul {
             list-style: none;
@@ -48,49 +58,71 @@
             text-decoration: none;
             gap: 10px;
             white-space: nowrap;
+            transition: all 0.3s;
+        }
+        .sidebar.collapsed ul li a {
+            padding: 12px 15px;
+            justify-content: center;
+        }
+        .sidebar.collapsed ul li a span {
+            display: none;
         }
         .sidebar ul li a:hover {
             background: #2e4a7d;
         }
-        .topbar { position: fixed;
-             left:220px; right:0;
-              top:0; height:60px;
-               background:#2e4a7d; 
-               display:flex; 
-               justify-content:space-between; 
-               align-items:center; 
-               padding:0 20px; 
-               transition:left 0.3s; }
+        .topbar {
+            position: fixed;
+            left: 220px;
+            right: 0;
+            top: 0;
+            height: 60px;
+            background: #2e4a7d;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 20px;
+            transition: left 0.3s;
+            z-index: 999;
+        }
         .sidebar.collapsed ~ .topbar {
-             left:70px;
-             }
-        .topbar .menu-btn { 
-            font-size:22px; 
-            color:white; 
-            cursor:pointer;
-         }
-        .topbar .right { 
-            display:flex; 
-            align-items:center; 
-            gap:15px; }
-        .topbar .logout { 
-            background:#e74c3c;
-             border:none; color:white; 
-             padding:8px 12px; 
-             border-radius:5px; 
-             cursor:pointer; }
-        .topbar .profile { 
-            width:35px;
-             height:35px;
-              border-radius:50%;
-               background:#ccc; }
+            left: 70px;
+        }
+        .topbar .menu-btn {
+            font-size: 22px;
+            color: white;
+            cursor: pointer;
+        }
+        .topbar .right {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        .topbar .logout {
+            background: #e74c3c;
+            border: none;
+            color: white;
+            padding: 8px 12px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .topbar .profile {
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            background: #ccc;
+        }
         .content {
             flex: 1;
-            min-width: 0;
-            margin-left: 0;
-            margin-top: 0;
+            margin-left: 220px;
+            margin-top: 60px;
             padding: 20px;
             background: #f4f4f4;
+            min-height: calc(100vh - 60px);
+            transition: margin-left 0.3s;
+            min-width: 0;
+        }
+        .sidebar.collapsed ~ .content {
+            margin-left: 70px;
         }
         .table-responsive {
             overflow-x: auto;
@@ -100,12 +132,15 @@
             border-radius: 8px;
             box-shadow: 0 2px 8px rgba(0,0,0,0.04);
             padding: 8px 0;
+            -webkit-overflow-scrolling: touch;
+            
+            
         }
         .table-responsive table {
-            min-width: 1200px;
+            min-width: 800px;
         }
         table th, table td {
-            vertical-align: middle !important;
+            vertical-align: middle;
             padding: 12px 24px;
             border: 1px solid #dee2e6;
             text-align: center;
@@ -117,14 +152,33 @@
         table th {
             background: #e9ecef;
             font-weight: 600;
+            position: sticky;
+            top: 0;
             letter-spacing: 0.5px;
+            z-index: 2;
         }
         table {
             border-collapse: separate;
-            border-spacing: 0 8px;
-            background: white;
+            border-spacing: 0;
             width: 100%;
+            margin: 0;
+            background: white;
             table-layout: auto;
+        }
+        .card {
+            border: none;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+        .card-header {
+            background: #f8f9fa;
+            border-bottom: 1px solid #dee2e6;
+            padding: 15px 20px;
+            font-weight: 600;
+        }
+        .card-body {
+            padding: 20px;
         }
         * {
             margin: 0;
@@ -132,46 +186,167 @@
             box-sizing: border-box;
             font-family: Arial, sans-serif;
         }
-        .list-group-item {
-    border: 1px solid #dee2e6;
-    margin-bottom: 2px;
-    border-radius: 4px;
-}
+        .card-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+        .fkrtl-card {
+            background: white;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            transition: transform 0.2s;
+        }
+        .fkrtl-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+        .fkrtl-card h5 {
+            color: #2e4a7d;
+            margin-bottom: 10px;
+        }
+        .fkrtl-card p {
+            color: #666;
+            margin-bottom: 5px;
+        }
+        .fkrtl-card .badge {
+            background: #2e4a7d;
+            color: white;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+        }
 
-.sub-item {
-    padding-left: 2rem;
-    background-color: #f8f9fa;
-}
+       
+        .form-control, .form-select {
+            border-radius: 6px;
+            border: 1px solid #ced4da;
+        }
+        .form-control:focus, .form-select:focus {
+            border-color: #2e4a7d;
+            box-shadow: 0 0 0 0.2rem rgba(46, 74, 125, 0.25);
+        }
+        .input-group-text {
+            background: #f8f9fa;
+            border: 1px solid #ced4da;
+        }
 
-.form-check-input {
-    margin-right: 10px;
-}
+     
+        .btn-primary {
+            background: #2e4a7d;
+            border-color: #2e4a7d;
+        }
+        .btn-primary:hover {
+            background: #1e3a6d;
+            border-color: #1e3a6d;
+        }
 
-.list-group-item[data-bs-toggle="collapse"] {
-    background-color: #0d6efd;
-    color: white;
-    font-weight: bold;
-}
+      
+        @media (max-width: 768px) {
+            .sidebar {
+                width: 70px;
+            }
+            .sidebar h2 {
+                font-size: 16px;
+                padding: 20px 5px;
+            }
+            .sidebar ul li a span {
+                display: none;
+            }
+            .topbar {
+                left: 70px;
+            }
+            .content {
+                margin-left: 70px;
+            }
+        }
 
-.list-group-item[data-bs-toggle="collapse"]:hover {
-    background-color: #0b5ed7;
+         tbody tr:nth-child(even) {
+            background-color: #f8f9fa;
+        }
+        
+        tbody tr:hover {
+            background-color: #e9ecef;
+        }
+        
+      
+        .table-responsive::-webkit-scrollbar {
+            height: 8px;
+        }
+        
+        .table-responsive::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 4px;
+        }
+        
+        .table-responsive::-webkit-scrollbar-thumb {
+            background: #a0a0a0;
+            border-radius: 4px;
+        }
+        
+        .table-responsive::-webkit-scrollbar-thumb:hover {
+            background: #808080;
+        }
+        
+        .table-responsive table {
+            min-width: 110%; 
+            width: 100%;
+            margin-bottom: 0;
+            border-collapse: collapse; 
+        }
+        
+        table th, table td {
+            vertical-align: middle;
+            padding: 12px 15px; 
+            border: 1px solid #dee2e6;
+            text-align: center;
+            font-size: 14px;
+            background: #fff;
+            min-width: 120px;
+            word-break: break-word;
+            white-space: nowrap; 
+        }
+        
+        table th {
+            background: #e9ecef;
+            font-weight: 600;
+            position: sticky;
+            top: 0;
+            letter-spacing: 0.5px;
+            z-index: 10; 
+        }
+       
+        tbody tr:nth-child(even) {
+            background-color: #f8f9fa;
+        }
+        
+        tbody tr:hover {
+            background-color: #e9ecef;
+        }
+        .form-split{
+            display: flex;
+            gap: 32px;
+            flex-wrap: wrap;
+        }
+        .form-split .form-col{
+            flex: 1 1 0;
+            min-width: 280px;
+        }
+        .custom-modal {
+    border-radius: 12px;
+    box-shadow: 0 4px 24px rgba(0,0,0,0.15);
 }
-
-.collapse.show {
-    border: 1px solid #dee2e6;
+.custom-modal .modal-header {
+    background: #198754;
+    color: #fff;
+    border-bottom: none;
+    border-radius: 12px 12px 0 0;
+}
+.custom-modal .modal-footer {
     border-top: none;
-    border-radius: 0 0 4px 4px;
 }
-
-.form-select, .form-control {
-    border-radius: 0.375rem;
-}
-
-.input-group-text {
-    background-color: #f8f9fa;
-    border: 1px solid #ced4da;
-}
-
     </style>
 </head>
 <body>
@@ -179,24 +354,55 @@
         <div class="sidebar">
             <h2>{{ config('app.name', 'SICETAR') }}</h2>
             <ul>
-                <li><a href="{{ route('dashboard') }}"><i class="fas fa-tachometer-alt"></i>Dashboard</a></li>
-                <li><a href="{{ route('pelayanan.index') }}"><i class="fas fa-chart-line"></i>Monitoring SLA</a></li>
-                <li><a href="#"><i class="fas fa-edit"></i>Koreksi SLA</a></li>
-                <li><a href="#"><i class="fas fa-file-export"></i>Export SLA</a></li>
+                <li><a href="{{ route('dashboard') }}"><i class="fas fa-tachometer-alt"></i><span>Dashboard</span></a></li>
+                <li><a href="{{ route('fkrtl.index') }}"><i class="fas fa-hospital"></i><span>Menu FKRTL</span></a></li>
+                <li><a href="{{ route('pelayanan.index') }}"><i class="fas fa-chart-line"></i><span>Monitoring SLA</span></a></li>
+                <li><a href="{{ route('pelayanan.index') }}"><i class="fas fa-edit"></i><span>Koreksi SLA</span></a></li>
+                <li><a href="{{ route('export.index')}}"><i class="fas fa-file-export"></i><span>Export SLA</span></a></li>
+                <li><a href="{{ route('rekap.index') }}"><i class="fas fa-book"></i><span>Rekap Register Klaim</span></a></li>
             </ul>
         </div>
-        <div class="content">
-            <div class="topbar">
+
+        <div class="topbar">
+            <div class="menu-btn" onclick="toggleSidebar()">
+                <i class="fas fa-bars"></i>
+            </div>
+            <div class="right">
+                <div class="profile"></div>
                 <form method="POST" action="{{ route('logout') }}">
                     @csrf
-                    <button type="submit" class="btn btn-danger btn-sm">Logout</button>
+                    <button type="submit" class="logout">Logout</button>
                 </form>
             </div>
+        </div>
+
+        <div class="content">
             <div class="p-4">
                 @yield('content')
             </div>
         </div>
     </div>
+
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        function toggleSidebar() {
+            const sidebar = document.querySelector('.sidebar');
+            sidebar.classList.toggle('collapsed');
+        }
+
+     
+        function checkScreenSize() {
+            if (window.innerWidth <= 768) {
+                document.querySelector('.sidebar').classList.add('collapsed');
+            } else {
+                document.querySelector('.sidebar').classList.remove('collapsed');
+            }
+        }
+
+   
+        window.addEventListener('load', checkScreenSize);
+        window.addEventListener('resize', checkScreenSize);
+    </script>
 </body>
 </html>
+

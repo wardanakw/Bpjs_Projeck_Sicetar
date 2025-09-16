@@ -1,10 +1,44 @@
-
 @extends('layouts.app')
 
 @section('title', 'Monitoring SLA')
 
 @section('content')
-    <h3 class="mt-5">Monitoring SLA</h3>
+{{-- DataTables CSS --}}
+<link rel="stylesheet" href="https://cdn.datatables.net/1.13.7/css/dataTables.bootstrap5.min.css">
+{{-- DataTables JS --}}
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+<script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/1.13.7/js/dataTables.bootstrap5.min.js"></script>
+
+<div class="container-fluid">
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="d-flex justify-content-between align-items-center">
+                <h3>Monitoring SLA</h3>
+                <div class="d-flex gap-2">
+                  
+                    <div class="dropdown">
+                        <button class="btn btn-outline-primary dropdown-toggle" type="button" data-bs-toggle="dropdown">
+                            <i class="fas fa-sort"></i> Urutkan
+                        </button>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="{{ request()->fullUrlWithQuery(['sort_by' => 'max_tgl_bakb', 'sort_order' => 'asc']) }}">Tanggal Max BAKB (A-Z)</a></li>
+                            <li><a class="dropdown-item" href="{{ request()->fullUrlWithQuery(['sort_by' => 'max_tgl_bahv', 'sort_order' => 'asc']) }}">Tanggal Max BAHV (A-Z)</a></li>
+                            <li><a class="dropdown-item" href="{{ request()->fullUrlWithQuery(['sort_by' => 'tgl_jt', 'sort_order' => 'asc']) }}">Tanggal JT (A-Z)</a></li>
+                        </ul>
+                    </div>
+
+                 
+                    <a href="{{ request()->fullUrlWithQuery(['hide_completed' => request('hide_completed') == '1' ? '0' : '1']) }}" 
+                       class="btn btn-{{ request('hide_completed') == '1' ? 'success' : 'outline-success' }}">
+                        <i class="fas fa-{{ request('hide_completed') == '1' ? 'eye' : 'eye-slash' }}"></i>
+                        {{ request('hide_completed') == '1' ? 'Tampilkan Semua' : 'Sembunyikan Selesai' }}
+                    </a>
+
+                </div>
+            </div>
+        </div>
+    </div>
 
     {{-- Pesan sukses --}}
     @if ($message = Session::get('success'))
@@ -16,7 +50,7 @@
     <div class="card shadow">
         <div class="card-body">
             <div class="table-responsive">
-                <table class="table table-bordered table-striped">
+                <table class="table table-bordered table-striped" id="slaTable">
                     <thead class="table-primary">
                         <tr>
                             <th>Nama FKRTL</th>
@@ -24,7 +58,7 @@
                             <th>Jenis Pelayanan</th>
                             <th>Jumlah Kasus</th>
                             <th>Biaya</th>
-                            <th>Tanggal BAST</th>                            
+                            <th>Tanggal BAST</th>
                             <th>No. BAST</th>
                             <th>Max Tanggal BAKB</th>
                             <th>Tanggal BAKB</th>
@@ -45,50 +79,88 @@
                     </thead>
                     <tbody>
                         @forelse ($pelayanan as $data)
-                            <tr>
+                            <tr class="{{ $data->tgl_reg_boa ? 'table-success' : '' }}">
                                 <td>{{ $data->nama_fkrtl }}</td>
-                                <td>{{ $data->bulan_pelayanan }}</td>
+                                <td>{{ $data->bulan_pelayanan ? date('M Y', strtotime($data->bulan_pelayanan)) : '' }}</td>
                                 <td>{{ $data->jenis_pelayanan }}</td>
                                 <td>{{ $data->jumlah_kasus }}</td>
                                 <td>Rp. {{ number_format($data->biaya, 0, ',', '.') }}</td>
                                 <td>{{ $data->tgl_bast_formatted }}</td>
                                 <td>{{ $data->no_bast }}</td>
-                                <td>{{ $data->max_tgl_bakb }}</td>
+                                <td>{{ $data->max_tgl_bakb_formatted ?? '' }}</td>
                                 <td>{{ $data->tgl_bakb_formatted }}</td>
                                 <td>{{ $data->no_bakb }}</td>
-                                <td>{{ $data->max_tgl_bahv }}</td>
-                                <td>{{ $data->tgl_bahv }}</td>
+                                <td>{{ $data->max_tgl_bahv_formatted ?? '' }}</td>
+                                <td>{{ $data->tgl_bahv_formatted ?? '' }}</td>
                                 <td>{{ $data->no_bahv }}</td>
                                 <td>{{ $data->kasus_hv }}</td>
                                 <td>Rp. {{ number_format($data->biaya_hv, 0, ',', '.') }}</td>
                                 <td>Rp. {{ number_format($data->umk, 0, ',', '.') }}</td>
                                 <td>Rp. {{ number_format($data->koreksi, 0, ',', '.') }}</td>
-                                <td>{{ $data->tgl_reg_boa }}</td>
-                                <td>{{ $data->tgl_jt }}</td>
+                                <td>
+                                    @if($data->tgl_reg_boa)
+                                        <span class="badge bg-success">{{ date('d-m-Y', strtotime($data->tgl_reg_boa)) }}</span>
+                                    @else
+                                        <span class="badge bg-warning">Belum Input</span>
+                                    @endif
+                                </td>
+                                <td>{{ $data->tgl_jt_formatted ?? '' }}</td>
                                 <td>{{ $data->memorial }}</td>
                                 <td>{{ $data->voucher }}</td>
                                 <td>
-                                    <a href="{{ route('pelayanan.edit', $data->id) }}" class="btn btn-sm btn-warning">
-                                        ✏️
-                                    </a>
-                                    <form action="{{ route('pelayanan.destroy', $data->id) }}" method="POST" class="d-inline">
-                                        @csrf
-                                        @method('DELETE')
-                                        <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Yakin hapus data ini?')">
-                                            🗑️
-                                        </button>
-                                    </form>
+                                    <div class="btn-group">
+                                        <a href="{{ route('pelayanan.edit', $data->id) }}" class="btn btn-sm btn-warning">
+                                            <i class="fas fa-edit"></i>
+                                        </a>
+                                        <form action="{{ route('pelayanan.destroy', $data->id) }}" method="POST">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Yakin hapus data ini?')">
+                                                <i class="fas fa-trash"></i>
+                                            </button>
+                                        </form>
+                                    </div>
                                 </td>
                             </tr>
                         @empty
                             <tr>
-                                <td colspan="22">Data tidak tersedia.</td>
+                                <td colspan="22" class="text-center">Tidak ada data yang ditemukan</td>
                             </tr>
                         @endforelse
                     </tbody>
                 </table>
-            <!-- </div>
-            <a href="{{ route('pelayanan.create') }}" class="btn btn-primary mt-3">+ Tambah Data</a>
-        </div> -->
+            </div>
+        </div>
     </div>
+</div>
+
+
+<script>
+    $(document).ready(function() {
+        $('#slaTable').DataTable({
+            "paging": true,
+            "lengthChange": false,
+            "searching": true,
+            "ordering": true,
+            "info": true,
+            "autoWidth": false,
+            "responsive": true,
+            "language": {
+                "emptyTable": "Tidak ada data yang ditemukan",
+                "zeroRecords": "Tidak ada data yang ditemukan",
+                "search": "Cari:",
+                "lengthMenu": "Tampilkan _MENU_ entri",
+                "info": "Menampilkan _START_ hingga _END_ dari _TOTAL_ entri",
+                "infoEmpty": "Menampilkan 0 hingga 0 dari 0 entri",
+                "infoFiltered": "(disaring dari _MAX_ total entri)",
+                "paginate": {
+                    "first": "Pertama",
+                    "last": "Terakhir",
+                    "next": "Selanjutnya",
+                    "previous": "Sebelumnya"
+                }
+            }
+        });
+    });
+</script>
 @endsection

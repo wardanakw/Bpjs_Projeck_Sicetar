@@ -9,6 +9,8 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\MonitoringController;
 use App\Http\Controllers\PelayananController;
 use App\Http\Controllers\FkrtlController;
+use App\Http\Controllers\ExportController;
+use App\Http\Controllers\RekapController;
 
 
 Route::get('/', function () {
@@ -22,22 +24,20 @@ Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
 
 
 Route::middleware('auth')->group(function () {
-    
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
-
     Route::get('/monitoring-sla', [MonitoringController::class, 'index'])->name('monitoring.sla');
-
-   
     Route::get('/fkrtl', [FkrtlController::class, 'index'])->name('fkrtl.index');
-
-    
     Route::resource('pelayanan', PelayananController::class);
-
-   
+ 
     Route::get('/pelayanan/{id}/files', [PelayananController::class, 'getFiles'])->name('pelayanan.files');
-    // Route untuk download file
-Route::get('/pelayanan/{id}/download/{type}', [PelayananController::class, 'downloadFile'])->name('pelayanan.download');
-Route::get('/check-file/{filename}', [PelayananController::class, 'checkFile'])->name('file.check');
+    Route::get('/pelayanan/{id}/download/{type}', [PelayananController::class, 'downloadFile'])->name('pelayanan.download');
+    Route::get('/check-file/{filename}', [PelayananController::class, 'checkFile'])->name('file.check');
+    Route::get('/export', [ExportController::class, 'index'])->name('export.index');
+    Route::get('/export/process', [ExportController::class, 'export'])->name('export.process');
+    Route::get('/pelayanan/export/preview', [PelayananController::class, 'exportPreview'])->name('pelayanan.export.preview');
+    Route::get('/rekap', [RekapController::class, 'index'])->name('rekap.index');
+    Route::get('/rekap/export', [RekapController::class, 'export'])->name('rekap.export');
+
 });
 
 Route::get('/test-storage', function () {
@@ -55,3 +55,9 @@ Route::get('/test-storage', function () {
     ]);
 
 });
+
+
+
+
+
+

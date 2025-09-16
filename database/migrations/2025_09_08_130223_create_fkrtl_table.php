@@ -10,7 +10,7 @@ return new class extends Migration
     {
         Schema::create('fkrtl', function (Blueprint $table) {
             $table->id();
-            $table->string('id_fkrtl')->unique();
+            $table->string('id_fkrtl')->primary();
             $table->string('kode_rumah_sakit');
             $table->string('nama_rumah_sakit');
             $table->string('jenis');
