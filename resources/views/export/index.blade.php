@@ -5,29 +5,34 @@
 @section('content')
 <div class="container-fluid">
     <div class="row mb-4">
-        <div class="col-12 d-flex justify-content-between align-items-center">
-            <h3>Export Data SLA</h3>
-            <a href="{{ route('pelayanan.index') }}" class="btn btn-secondary">
-                <i class="fas fa-arrow-left"></i> Kembali ke Monitoring
-            </a>
+        <div class="col-12">
+            <div class="d-flex justify-content-between align-items-center">
+                <h3>Export Data SLA</h3>
+                <a href="{{ route('pelayanan.index') }}" class="btn btn-secondary">
+                    <i class="fas fa-arrow-left"></i> Kembali ke Monitoring
+                </a>
+            </div>
         </div>
     </div>
 
     <div class="row g-4">
+        <!-- Export Semua Data -->
         <div class="col-md-6">
-            <div class="card shadow h-100">
+            <div class="card shadow">
                 <div class="card-header bg-primary text-white">
-                    <h5 class="mb-0">Export Data</h5>
+                    <h5 class="mb-0">Export Semua Data</h5>
                 </div>
                 <div class="card-body">
                     <form action="{{ route('export.process') }}" method="GET">
                         <input type="hidden" name="hanya_reg_boa" value="0">
+                        
                         <div class="mb-3">
                             <label for="filename" class="form-label">Nama File Export</label>
                             <input type="text" class="form-control" id="filename" name="filename" placeholder="Masukan Nama File">
                         </div>
-                        <div class="row g-2">
-                            <div class="col-md-6 mb-3">
+
+                        <div class="row g-3">
+                            <div class="col-md-6">
                                 <label for="bulan" class="form-label">Bulan</label>
                                 <select class="form-select" id="bulan" name="bulan">
                                     <option value="">Semua Bulan</option>
@@ -38,7 +43,7 @@
                                     @endfor
                                 </select>
                             </div>
-                            <div class="col-md-6 mb-3">
+                            <div class="col-md-6">
                                 <label for="tahun" class="form-label">Tahun</label>
                                 <select class="form-select" id="tahun" name="tahun">
                                     <option value="">Semua Tahun</option>
@@ -50,7 +55,8 @@
                                 </select>
                             </div>
                         </div>
-                        <button type="submit" class="btn btn-success w-100">
+
+                        <button type="submit" class="btn btn-success w-100 mt-3">
                             <i class="fas fa-download"></i> Export Semua Data
                         </button>
                     </form>
@@ -58,20 +64,23 @@
             </div>
         </div>
 
+        <!-- Export Data Selesai -->
         <div class="col-md-6">
-            <div class="card shadow h-100">
+            <div class="card shadow">
                 <div class="card-header bg-success text-white">
                     <h5 class="mb-0">Export Data Selesai (Sudah Reg BoA)</h5>
                 </div>
                 <div class="card-body">
                     <form action="{{ route('export.process') }}" method="GET">
                         <input type="hidden" name="hanya_reg_boa" value="1">
+
                         <div class="mb-3">
                             <label for="filename_selesai" class="form-label">Nama File Export</label>
                             <input type="text" class="form-control" id="filename_selesai" name="filename" placeholder="Masukan Nama File">
                         </div>
-                        <div class="row g-2">
-                            <div class="col-md-6 mb-3">
+
+                        <div class="row g-3">
+                            <div class="col-md-6">
                                 <label for="bulan_selesai" class="form-label">Bulan</label>
                                 <select class="form-select" id="bulan_selesai" name="bulan">
                                     <option value="">Semua Bulan</option>
@@ -82,7 +91,7 @@
                                     @endfor
                                 </select>
                             </div>
-                            <div class="col-md-6 mb-3">
+                            <div class="col-md-6">
                                 <label for="tahun_selesai" class="form-label">Tahun</label>
                                 <select class="form-select" id="tahun_selesai" name="tahun">
                                     <option value="">Semua Tahun</option>
@@ -94,7 +103,8 @@
                                 </select>
                             </div>
                         </div>
-                        <button type="submit" class="btn btn-success w-100">
+
+                        <button type="submit" class="btn btn-success w-100 mt-3">
                             <i class="fas fa-download"></i> Export Data Selesai
                         </button>
                     </form>
@@ -103,6 +113,7 @@
         </div>
     </div>
 
+    <!-- Preview Data -->
     @if(isset($previewData) && $previewData->count() > 0)
     <div class="row mt-4">
         <div class="col-12">
@@ -113,7 +124,7 @@
                 </div>
                 <div class="card-body">
                     <div class="table-responsive">
-                        <table class="table table-bordered table-striped align-middle">
+                        <table class="table table-bordered table-striped text-center">
                             <thead>
                                 <tr>
                                     <th>Nama FKRTL</th>

@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Monitoring SLA')
+@section('title', 'Koreksi SLA')
 
 @section('content')
 <link rel="stylesheet" href="https://cdn.datatables.net/1.13.7/css/dataTables.bootstrap5.min.css">
@@ -12,7 +12,7 @@
     <div class="row mb-4">
         <div class="col-12">
             <div class="d-flex justify-content-between align-items-center">
-                <h3>Monitoring SLA</h3>
+                <h3>Koreksi SLA</h3>
                 <div class="d-flex gap-2">
                   
                     <div class="dropdown">
@@ -26,12 +26,9 @@
                         </ul>
                     </div>
 
-                 
-                    <!-- <a href="{{ request()->fullUrlWithQuery(['hide_completed' => request('hide_completed') == '1' ? '0' : '1']) }}" 
-                       class="btn btn-{{ request('hide_completed') == '1' ? 'success' : 'outline-success' }}">
-                        <i class="fas fa-{{ request('hide_completed') == '1' ? 'eye' : 'eye-slash' }}"></i>
-                        {{ request('hide_completed') == '1' ? 'Tampilkan Semua' : 'Sembunyikan Selesai' }}
-                    </a> -->
+                    <a href="{{ route('monitoring-sla') }}" class="btn btn-outline-primary">
+                        <i class="fas fa-arrow-left"></i> Kembali ke Monitoring SLA
+                    </a>
 
                 </div>
             </div>
@@ -48,7 +45,7 @@
     <div class="card shadow">
         <div class="card-body">
             <div class="table-responsive">
-                <table class="table table-bordered table-striped" id="slaTable">
+                <table class="table table-bordered table-striped" id="koreksiSlaTable">
                     <thead class="table-primary">
                         <tr>
                             <th>Nama FKRTL</th>
@@ -70,6 +67,7 @@
                             <th>Koreksi</th>
                             <th>Tanggal Reg BoA</th>
                             <th>Tanggal Jatuh Tempo</th>
+                            <th>Tanggal Bayar</th>
                             <th>Memorial</th>
                             <th>Voucher</th>
                             <th>Aksi</th>
@@ -77,16 +75,16 @@
                     </thead>
                     <tbody>
                         @forelse ($pelayanan as $data)
-                            <tr class="{{ $data->tgl_reg_boa ? 'table-success' : '' }}">
+                            <tr class="table-success">
                                 <td>{{ $data->nama_fkrtl }}</td>
                                 <td>{{ $data->bulan_pelayanan ? date('M Y', strtotime($data->bulan_pelayanan)) : '' }}</td>
                                 <td>{{ $data->jenis_pelayanan }}</td>
                                 <td>{{ $data->jumlah_kasus }}</td>
                                 <td>Rp. {{ number_format($data->biaya, 0, ',', '.') }}</td>
-                                <td>{{ $data->tgl_bast_formatted }}</td>
+                                <td>{{ $data->tgl_bast_formatted ?? '' }}</td>
                                 <td>{{ $data->no_bast }}</td>
                                 <td>{{ $data->max_tgl_bakb_formatted ?? '' }}</td>
-                                <td>{{ $data->tgl_bakb_formatted }}</td>
+                                <td>{{ $data->tgl_bakb_formatted ?? '' }}</td>
                                 <td>{{ $data->no_bakb }}</td>
                                 <td>{{ $data->max_tgl_bahv_formatted ?? '' }}</td>
                                 <td>{{ $data->tgl_bahv_formatted ?? '' }}</td>
@@ -99,18 +97,21 @@
                                     @if($data->tgl_reg_boa)
                                         <span class="badge bg-success">{{ date('d-m-Y', strtotime($data->tgl_reg_boa)) }}</span>
                                     @else
-                                        <span class="badge bg-warning">Belum Input</span>
+                                        <span class="badge bg-secondary">-</span>
                                     @endif
                                 </td>
                                 <td>{{ $data->tgl_jt_formatted ?? '' }}</td>
+                                <td>
+                                    {{ $data->tgl_bayar ? date('d-m-Y', strtotime($data->tgl_bayar)) : '-' }}
+                                </td>
                                 <td>{{ $data->memorial }}</td>
                                 <td>{{ $data->voucher }}</td>
                                 <td>
                                     <div class="btn-group">
-                                        <a href="{{ route('pelayanan.edit', $data->id) }}" class="btn btn-sm btn-warning">
+                                        <a href="{{ route('koreksi.edit', $data->id) }}" class="btn btn-sm btn-warning">
                                             <i class="fas fa-edit"></i>
                                         </a>
-                                        <form action="{{ route('pelayanan.destroy', $data->id) }}" method="POST">
+                                        <form action="{{ route('koreksi.destroy', $data->id) }}" method="POST">
                                             @csrf
                                             @method('DELETE')
                                             <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Yakin hapus data ini?')">
@@ -122,7 +123,7 @@
                             </tr>
                         @empty
                             <tr>
-                                <td colspan="22" class="text-center">Tidak ada data yang ditemukan</td>
+                                <td colspan="23" class="text-center">Tidak ada data koreksi yang ditemukan</td>
                             </tr>
                         @endforelse
                     </tbody>
@@ -132,10 +133,9 @@
     </div>
 </div>
 
-
 <script>
     $(document).ready(function() {
-        $('#slaTable').DataTable({
+        $('#koreksiSlaTable').DataTable({
             "paging": true,
             "lengthChange": false,
             "searching": true,
@@ -144,8 +144,8 @@
             "autoWidth": false,
             "responsive": true,
             "language": {
-                "emptyTable": "Tidak ada data yang ditemukan",
-                "zeroRecords": "Tidak ada data yang ditemukan",
+                "emptyTable": "Tidak ada data koreksi yang ditemukan",
+                "zeroRecords": "Tidak ada data koreksi yang ditemukan",
                 "search": "Cari:",
                 "lengthMenu": "Tampilkan _MENU_ entri",
                 "info": "Menampilkan _START_ hingga _END_ dari _TOTAL_ entri",
@@ -153,7 +153,7 @@
                 "infoFiltered": "(disaring dari _MAX_ total entri)",
                 "paginate": {
                     "first": "Pertama",
-                    "last": "Terakhir",
+                    "last": "Terakhir", 
                     "next": "Selanjutnya",
                     "previous": "Sebelumnya"
                 }

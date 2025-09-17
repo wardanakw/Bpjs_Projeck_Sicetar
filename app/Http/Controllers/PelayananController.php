@@ -11,58 +11,160 @@ use Maatwebsite\Excel\Facades\Excel;
 class PelayananController extends Controller
 {
     public function index(Request $request)
-{
-    $query = Pelayanan::query();
-    
-    if ($request->has('hide_completed') && $request->hide_completed == '1') {
-        $query->whereNull('tgl_reg_boa');
-    }
+    {
+        $query = Pelayanan::query();
 
-    $sortBy = $request->get('sort_by', 'created_at');
-    $sortOrder = $request->get('sort_order', 'desc');
-    
-    switch ($sortBy) {
-        case 'max_tgl_bakb':
-            $query->orderBy('max_tgl_bakb', $sortOrder);
-            break;
-        case 'max_tgl_bahv':
-            $query->orderBy('max_tgl_bahv', $sortOrder);
-            break;
-        case 'tgl_jt':
-            $query->orderBy('tgl_jt', $sortOrder);
-            break;
-        default:
-            $query->orderBy('created_at', $sortOrder);
-    }
-    
-    $pelayanan = $query->get();
+        $query->where(function($q) {
+            $q->whereNull('koreksi')
+              ->orWhere('koreksi', 0);
+        });
 
-    foreach ($pelayanan as $item) {
-        $item->tgl_bast_formatted = $item->tgl_bast ? date('d-m-Y', strtotime($item->tgl_bast)) : null;
-        $item->tgl_bakb_formatted = $item->tgl_bakb ? date('d-m-Y', strtotime($item->tgl_bakb)) : null;
-        $item->tgl_bahv_formatted = $item->tgl_bahv ? date('d-m-Y', strtotime($item->tgl_bahv)) : null;
-        $item->tgl_jt_formatted = $item->tgl_jt ? date('d-m-Y', strtotime($item->tgl_jt)) : null;
+        if ($request->has('hide_completed') && $request->hide_completed == '1') {
+            $query->whereNull('tgl_reg_boa');
+        }
 
-        if ($item->tgl_bast) {
-            $item->max_tgl_bakb = date('Y-m-d', strtotime($item->tgl_bast . ' +9 days'));
-            $item->max_tgl_bakb_formatted = date('d-m-Y', strtotime($item->tgl_bast . ' +9 days'));
-            
-            if (!$item->tgl_bakb) {
-                $item->max_tgl_bahv = date('Y-m-d', strtotime($item->max_tgl_bakb . ' +9 days'));
-                $item->max_tgl_bahv_formatted = date('d-m-Y', strtotime($item->max_tgl_bakb . ' +9 days'));
-                $item->tgl_jt_calculated = date('Y-m-d', strtotime($item->max_tgl_bakb . ' +14 days'));
-                $item->tgl_jt_calculated_formatted = date('d-m-Y', strtotime($item->max_tgl_bakb . ' +14 days'));
-            } else {
-                $item->max_tgl_bahv = date('Y-m-d', strtotime($item->tgl_bakb . ' +9 days'));
-                $item->max_tgl_bahv_formatted = date('d-m-Y', strtotime($item->tgl_bakb . ' +9 days'));
-                $item->tgl_jt_calculated = date('Y-m-d', strtotime($item->tgl_bakb . ' +14 days'));
-                $item->tgl_jt_calculated_formatted = date('d-m-Y', strtotime($item->tgl_bakb . ' +14 days'));
+        $sortBy = $request->get('sort_by', 'created_at');
+        $sortOrder = $request->get('sort_order', 'desc');
+        
+        switch ($sortBy) {
+            case 'max_tgl_bakb':
+                $query->orderBy('max_tgl_bakb', $sortOrder);
+                break;
+            case 'max_tgl_bahv':
+                $query->orderBy('max_tgl_bahv', $sortOrder);
+                break;
+            case 'tgl_jt':
+                $query->orderBy('tgl_jt', $sortOrder);
+                break;
+            default:
+                $query->orderBy('created_at', $sortOrder);
+        }
+        
+        $pelayanan = $query->get();
+
+        foreach ($pelayanan as $item) {
+            $item->tgl_bast_formatted = $item->tgl_bast ? date('d-m-Y', strtotime($item->tgl_bast)) : null;
+            $item->tgl_bakb_formatted = $item->tgl_bakb ? date('d-m-Y', strtotime($item->tgl_bakb)) : null;
+            $item->tgl_bahv_formatted = $item->tgl_bahv ? date('d-m-Y', strtotime($item->tgl_bahv)) : null;
+            $item->tgl_jt_formatted = $item->tgl_jt ? date('d-m-Y', strtotime($item->tgl_jt)) : null;
+
+            if ($item->tgl_bast) {
+                $item->max_tgl_bakb = date('Y-m-d', strtotime($item->tgl_bast . ' +9 days'));
+                $item->max_tgl_bakb_formatted = date('d-m-Y', strtotime($item->tgl_bast . ' +9 days'));
+                
+                if (!$item->tgl_bakb) {
+                    $item->max_tgl_bahv = date('Y-m-d', strtotime($item->max_tgl_bakb . ' +9 days'));
+                    $item->max_tgl_bahv_formatted = date('d-m-Y', strtotime($item->max_tgl_bakb . ' +9 days'));
+                    $item->tgl_jt_calculated = date('Y-m-d', strtotime($item->max_tgl_bakb . ' +14 days'));
+                    $item->tgl_jt_calculated_formatted = date('d-m-Y', strtotime($item->max_tgl_bakb . ' +14 days'));
+                } else {
+                    $item->max_tgl_bahv = date('Y-m-d', strtotime($item->tgl_bakb . ' +9 days'));
+                    $item->max_tgl_bahv_formatted = date('d-m-Y', strtotime($item->tgl_bakb . ' +9 days'));
+                    $item->tgl_jt_calculated = date('Y-m-d', strtotime($item->tgl_bakb . ' +14 days'));
+                    $item->tgl_jt_calculated_formatted = date('d-m-Y', strtotime($item->tgl_bakb . ' +14 days'));
+                }
             }
         }
+
+        return view('pelayanan.index', compact('pelayanan', 'sortBy', 'sortOrder'));
     }
 
-    return view('pelayanan.index', compact('pelayanan', 'sortBy', 'sortOrder'));
-}
+    public function monitoringSla(Request $request)
+    {
+        $query = Pelayanan::query();
+
+        $query->where(function($q) {
+            $q->whereNull('koreksi')
+              ->orWhere('koreksi', 0);
+        });
+
+        $sortBy = $request->get('sort_by', 'max_tgl_bakb');
+        $sortOrder = $request->get('sort_order', 'asc');
+
+        if ($request->has('hide_completed') && $request->hide_completed == '1') {
+            $query->whereNull('tgl_reg_boa');
+        }
+
+        if ($sortBy && in_array($sortBy, ['max_tgl_bakb', 'max_tgl_bahv', 'tgl_jt'])) {
+            $query->orderBy($sortBy, $sortOrder);
+        }
+
+        $pelayanan = $query->get();
+
+        foreach ($pelayanan as $item) {
+            $item->tgl_bast_formatted = $item->tgl_bast ? date('d-m-Y', strtotime($item->tgl_bast)) : null;
+            $item->tgl_bakb_formatted = $item->tgl_bakb ? date('d-m-Y', strtotime($item->tgl_bakb)) : null;
+            $item->tgl_bahv_formatted = $item->tgl_bahv ? date('d-m-Y', strtotime($item->tgl_bahv)) : null;
+            $item->tgl_jt_formatted = $item->tgl_jt ? date('d-m-Y', strtotime($item->tgl_jt)) : null;
+
+            if ($item->tgl_bast) {
+                $item->max_tgl_bakb = date('Y-m-d', strtotime($item->tgl_bast . ' +9 days'));
+                $item->max_tgl_bakb_formatted = date('d-m-Y', strtotime($item->tgl_bast . ' +9 days'));
+
+                if (!$item->tgl_bakb) {
+                    $item->max_tgl_bahv = date('Y-m-d', strtotime($item->max_tgl_bakb . ' +9 days'));
+                    $item->max_tgl_bahv_formatted = date('d-m-Y', strtotime($item->max_tgl_bakb . ' +9 days'));
+                    $item->tgl_jt_calculated = date('Y-m-d', strtotime($item->max_tgl_bakb . ' +14 days'));
+                    $item->tgl_jt_calculated_formatted = date('d-m-Y', strtotime($item->max_tgl_bakb . ' +14 days'));
+                } else {
+                    $item->max_tgl_bahv = date('Y-m-d', strtotime($item->tgl_bakb . ' +9 days'));
+                    $item->max_tgl_bahv_formatted = date('d-m-Y', strtotime($item->tgl_bakb . ' +9 days'));
+                    $item->tgl_jt_calculated = date('Y-m-d', strtotime($item->tgl_bakb . ' +14 days'));
+                    $item->tgl_jt_calculated_formatted = date('d-m-Y', strtotime($item->tgl_bakb . ' +14 days'));
+                }
+            }
+        }
+
+        return view('monitoring-sla', compact('pelayanan', 'sortBy', 'sortOrder'));
+    }
+
+    public function koreksiSla(Request $request)
+    {
+        $query = Pelayanan::query();
+        
+    
+        $query->whereNotNull('koreksi')
+              ->where('koreksi', '>', 0)
+              ->whereNotNull('tgl_reg_boa');
+        
+
+        $sortBy = $request->get('sort_by', 'max_tgl_bakb');
+        $sortOrder = $request->get('sort_order', 'asc');
+        
+     
+        if ($sortBy && in_array($sortBy, ['max_tgl_bakb', 'max_tgl_bahv', 'tgl_jt'])) {
+            $query->orderBy($sortBy, $sortOrder);
+        }
+        
+        $pelayanan = $query->get();
+
+        foreach ($pelayanan as $item) {
+            $item->tgl_bast_formatted = $item->tgl_bast ? date('d-m-Y', strtotime($item->tgl_bast)) : null;
+            $item->tgl_bakb_formatted = $item->tgl_bakb ? date('d-m-Y', strtotime($item->tgl_bakb)) : null;
+            $item->tgl_bahv_formatted = $item->tgl_bahv ? date('d-m-Y', strtotime($item->tgl_bahv)) : null;
+            $item->tgl_jt_formatted = $item->tgl_jt ? date('d-m-Y', strtotime($item->tgl_jt)) : null;
+
+            if ($item->tgl_bast) {
+                $item->max_tgl_bakb = date('Y-m-d', strtotime($item->tgl_bast . ' +9 days'));
+                $item->max_tgl_bakb_formatted = date('d-m-Y', strtotime($item->tgl_bast . ' +9 days'));
+                
+                if (!$item->tgl_bakb) {
+                    $item->max_tgl_bahv = date('Y-m-d', strtotime($item->max_tgl_bakb . ' +9 days'));
+                    $item->max_tgl_bahv_formatted = date('d-m-Y', strtotime($item->max_tgl_bakb . ' +9 days'));
+                    $item->tgl_jt_calculated = date('Y-m-d', strtotime($item->max_tgl_bakb . ' +14 days'));
+                    $item->tgl_jt_calculated_formatted = date('d-m-Y', strtotime($item->max_tgl_bakb . ' +14 days'));
+                } else {
+                    $item->max_tgl_bahv = date('Y-m-d', strtotime($item->tgl_bakb . ' +9 days'));
+                    $item->max_tgl_bahv_formatted = date('d-m-Y', strtotime($item->tgl_bakb . ' +9 days'));
+                    $item->tgl_jt_calculated = date('Y-m-d', strtotime($item->tgl_bakb . ' +14 days'));
+                    $item->tgl_jt_calculated_formatted = date('d-m-Y', strtotime($item->tgl_bakb . ' +14 days'));
+                }
+            }
+        }
+        
+        return view('pelayanan.koreksi-sla', compact('pelayanan', 'sortBy', 'sortOrder'));
+    }
+
     public function create(Request $request)
     {
         $selectedFkrtl = null;
@@ -75,6 +177,7 @@ class PelayananController extends Controller
 
         return view('pelayanan.create', compact('selectedFkrtl', 'fkrtlList'));
     }
+    
 
     public function store(Request $request)
     {
@@ -213,5 +316,17 @@ class PelayananController extends Controller
             'tgl_jt_formatted' => null
         ]);
     }
+
+    public function show($id)
+{
+    $pelayanan = Pelayanan::findOrFail($id);
+    
+    $pelayanan->tgl_bast_formatted = $pelayanan->tgl_bast ? date('d-m-Y', strtotime($pelayanan->tgl_bast)) : null;
+    $pelayanan->tgl_bakb_formatted = $pelayanan->tgl_bakb ? date('d-m-Y', strtotime($pelayanan->tgl_bakb)) : null;
+    $pelayanan->tgl_bahv_formatted = $pelayanan->tgl_bahv ? date('d-m-Y', strtotime($pelayanan->tgl_bahv)) : null;
+    $pelayanan->tgl_jt_formatted = $pelayanan->tgl_jt ? date('d-m-Y', strtotime($pelayanan->tgl_jt)) : null;
+    
+    return view('pelayanan.show', compact('pelayanan'));
+}
 
 }

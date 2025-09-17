@@ -81,11 +81,6 @@
 </select>
                             </div>
                             <div class="col-12">
-                                <label for="no_bo" class="form-label">Reg BoA</label>
-                                <input type="text" class="form-control" id="no_bo" name="no_bo" 
-                                       value="{{ request('no_bo') }}" placeholder="Cari Tanggal BoA...">
-                            </div>
-                            <div class="col-12">
                                 <label for="tgl_reg_boa" class="form-label">Tanggal BoA</label>
                                 <input type="date" class="form-control" id="tgl_reg_boa" name="tgl_reg_boa"
                                        value="{{ request('tgl_reg_boa') }}" placeholder="Pilih Tanggal BoA...">
@@ -137,6 +132,7 @@
                             <th>UMK</th>
                             <th>Koreksi</th>
                             <th>Tanggal Jatuh Tempo</th>
+                            <th>Tanggal Bayar</th>
                             <th>Status</th>
                             <th>Memorial</th>
                             <th>Voucher</th>
@@ -170,6 +166,9 @@
                                 <td>Rp. {{ number_format($data->umk, 0, ',', '.') }}</td>
                                 <td>Rp. {{ number_format($data->koreksi, 0, ',', '.') }}</td>
                                     <td>{{ $data->tgl_jt_formatted }}</td>
+                                    <td>
+                                    {{ $data->tgl_bayar ? date('d-m-Y', strtotime($data->tgl_bayar)) : '-' }}
+                                </td>
                                     <td>
                                         @if($data->tgl_reg_boa)
                                             <span class="badge bg-success">Selesai</span>
@@ -233,6 +232,7 @@ function exportRekap() {
     const params = new URLSearchParams(window.location.search);
     window.location.href = '{{ route("rekap.export") }}?' + params.toString();
 }
+
 </script>
 @endpush
 

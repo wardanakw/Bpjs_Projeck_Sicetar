@@ -6,6 +6,7 @@
     <title>{{ config('app.name', 'SICETAR') }} - @yield('title')</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap" rel="stylesheet">
     <style>
         body {
             min-height: 100vh;
@@ -33,13 +34,16 @@
             width: 70px;
         }
         .sidebar h2 {
-            text-align: center;
-            padding: 20px 0;
-            font-size: 20px;
-            border-bottom: 1px solid rgba(255,255,255,0.1);
-            white-space: nowrap;
-            overflow: hidden;
+        text-align: center;
+        padding: 20px 0;
+        font-size: 20px;
+        border-bottom: 1px solid rgba(255,255,255,0.1);
+        white-space: nowrap;
+        overflow: hidden;
+        font-weight: 700; /* membuat bold */
+        font-family: 'Poppins', 'Segoe UI', 'Arial', sans-serif; /* font unik */
         }
+
         .sidebar.collapsed h2 {
             font-size: 16px;
             padding: 20px 5px;
@@ -104,12 +108,26 @@
             padding: 8px 12px;
             border-radius: 5px;
             cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
         }
         .topbar .profile {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: white;
+            font-weight: 500;
+        }
+        .topbar .profile-icon {
             width: 35px;
             height: 35px;
             border-radius: 50%;
-            background: #ccc;
+            background: rgba(255, 255, 255, 0.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
         }
         .content {
             flex: 1;
@@ -261,6 +279,9 @@
             .content {
                 margin-left: 70px;
             }
+            .topbar .profile-text {
+                display: none;
+            }
         }
 
          tbody tr:nth-child(even) {
@@ -334,30 +355,17 @@
             flex: 1 1 0;
             min-width: 280px;
         }
-        .custom-modal {
-    border-radius: 12px;
-    box-shadow: 0 4px 24px rgba(0,0,0,0.15);
-}
-.custom-modal .modal-header {
-    background: #198754;
-    color: #fff;
-    border-bottom: none;
-    border-radius: 12px 12px 0 0;
-}
-.custom-modal .modal-footer {
-    border-top: none;
-}
     </style>
 </head>
 <body>
     <div class="layout">
         <div class="sidebar">
-            <h2>{{ config('app.name', 'SICETAR') }}</h2>
+            <h2>{{ config('app.name', 'SICETAR') }} </h2>
             <ul>
                 <li><a href="{{ route('dashboard') }}"><i class="fas fa-tachometer-alt"></i><span>Dashboard</span></a></li>
                 <li><a href="{{ route('fkrtl.index') }}"><i class="fas fa-hospital"></i><span>Menu FKRTL</span></a></li>
                 <li><a href="{{ route('pelayanan.index') }}"><i class="fas fa-chart-line"></i><span>Monitoring SLA</span></a></li>
-                <li><a href="{{ route('pelayanan.index') }}"><i class="fas fa-edit"></i><span>Koreksi SLA</span></a></li>
+                <li><a href="{{ route('koreksi.index') }}"><i class="fas fa-edit"></i><span>Koreksi SLA</span></a></li>
                 <li><a href="{{ route('export.index')}}"><i class="fas fa-file-export"></i><span>Export SLA</span></a></li>
                 <li><a href="{{ route('rekap.index') }}"><i class="fas fa-book"></i><span>Rekap Register Klaim</span></a></li>
             </ul>
@@ -368,10 +376,18 @@
                 <i class="fas fa-bars"></i>
             </div>
             <div class="right">
-                <div class="profile"></div>
+                <div class="profile">
+                    <div class="profile-icon">
+                        <i class="fas fa-user"></i>
+                    </div>
+                    <span class="profile-text">Admin</span>
+                </div>
                 <form method="POST" action="{{ route('logout') }}">
                     @csrf
-                    <button type="submit" class="logout">Logout</button>
+                    <button type="submit" class="logout">
+                        <i class="fas fa-sign-out-alt"></i>
+                        <span>Logout</span>
+                    </button>
                 </form>
             </div>
         </div>
@@ -405,4 +421,3 @@
     </script>
 </body>
 </html>
-

@@ -31,6 +31,7 @@ class Pelayanan extends Model
         'koreksi',
         'tgl_reg_boa',
         'tgl_jt',
+        'tgl_bayar',
         'memorial',
         'voucher',
         'detail_pelyanan'

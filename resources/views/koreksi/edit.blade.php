@@ -18,9 +18,8 @@
                 </div>
             @endif
 
-            <form action="{{ route('pelayanan.update', $pelayanan->id) }}" method="POST" class="form-split">
+            <form action="{{ route('koreksi.update', $pelayanan->id) }}" method="POST" id="editKoreksiForm">
                 @csrf
-                @method('PUT')
 
                 <div class="form-col">
                     
@@ -30,7 +29,6 @@
                                value="{{ old('nama_fkrtl', $pelayanan->nama_fkrtl) }}" required>
                     </div>
 
-            
                     <div class="mb-3">
                         <label for="bulan_pelayanan" class="form-label">Bulan Pelayanan</label>
                         <input type="month" class="form-control" id="bulan_pelayanan"
@@ -201,6 +199,12 @@
                                value="{{ old('tgl_jt', $pelayanan->tgl_jt) }}">
                     </div>
 
+                       <div class="mb-3">
+                        <label for="tgl_bayar" class="form-label">Tanggal Bayar</label>
+                        <input type="date" class="form-control" id="tgl_bayar" name="tgl_bayar"
+                               value="{{ old('tgl_bayar', $pelayanan->tgl_bayar) }}">
+                    </div>
+
 
 
                     {{-- Memorial --}}
@@ -249,7 +253,7 @@
 document.addEventListener('DOMContentLoaded', function() {
     const jenisPelayananSelect = document.getElementById('jenis_pelayanan');
 
-    
+    // --- BAST ---
     const tglBastInput = document.getElementById('tgl_bast');
     const noBastPrefix = document.getElementById('no_bast_prefix');
     const noBastSuffix = document.getElementById('no_bast_suffix');
@@ -283,7 +287,7 @@ document.addEventListener('DOMContentLoaded', function() {
     tglBastInput.addEventListener('change', updateNoBast);
     updateNoBast();
 
-
+    // --- BAKB ---
     const tglBakbInput = document.getElementById('tgl_bakb');
     const noBakbPrefix = document.getElementById('no_bakb_prefix');
     const noBakbSuffix = document.getElementById('no_bakb_suffix');
@@ -307,7 +311,7 @@ document.addEventListener('DOMContentLoaded', function() {
     tglBakbInput.addEventListener('change', updateNoBakb);
     updateNoBakb();
 
-
+    // --- BAHV ---
     const tglBahvInput = document.getElementById('tgl_bahv');
     const noBahvPrefix = document.getElementById('no_bahv_prefix');
     const noBahvSuffix = document.getElementById('no_bahv_suffix');
@@ -331,7 +335,7 @@ document.addEventListener('DOMContentLoaded', function() {
     tglBahvInput.addEventListener('change', updateNoBahv);
     updateNoBahv();
 
-
+    // --- Alat Kesehatan toggle ---
     function toggleAlatKesehatan() {
         const alatSection = document.getElementById('alatKesehatanSection');
         const selected = jenisPelayananSelect.value;
