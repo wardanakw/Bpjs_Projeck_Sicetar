@@ -10,7 +10,8 @@ use Maatwebsite\Excel\Facades\Excel;
 class RekapController extends Controller
 {
     public function index(Request $request)
-    {
+{    
+
         $query = Pelayanan::query();
         
         if ($request->has('bulan') && $request->bulan != '') {
@@ -69,4 +70,47 @@ class RekapController extends Controller
 
         return Excel::download(new RekapExport($bulan, $tahun, $tgl_reg_boa), $filename);
     }
+ 
+public function edit($id)
+{
+  
+    $pelayanan = Pelayanan::findOrFail($id);
+
+   
+    return view('rekap.edit', compact('pelayanan'));
+}
+
+public function update(Request $request, $id)
+{
+    $pelayanan = Pelayanan::findOrFail($id);
+
+
+    if (auth()->user()->role === 'finance') {
+        $rules = [
+            'tgl_bayar' => 'required|date',
+        ];
+    } else {
+        $rules = [
+            'tgl_bayar' => 'nullable|date',
+            'memorial' => 'nullable|string|max:255',
+            'voucher'  => 'nullable|string|max:255',
+        ];
+    }
+
+    $validated = $request->validate($rules);
+
+    if ($request->has('tgl_bayar')) {
+        $pelayanan->tgl_bayar = $request->tgl_bayar;
+    }
+    if ($request->has('memorial')) {
+        $pelayanan->memorial = $validated['memorial'] ?? null;
+    }
+    if ($request->has('voucher')) {
+        $pelayanan->voucher = $validated['voucher'] ?? null;
+    }
+
+    $pelayanan->save();
+
+    return redirect()->route('rekap.index')->with('success', 'Data berhasil diperbarui.');
+}
 }

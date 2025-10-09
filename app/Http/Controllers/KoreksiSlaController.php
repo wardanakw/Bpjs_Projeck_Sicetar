@@ -8,17 +8,15 @@ use Illuminate\Support\Facades\Auth;
 
 class KoreksiSlaController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
+
     public function index(Request $request)
     {
-        // Tampilkan semua data yang sudah dikoreksi (koreksi > 0)
+        
         $query = Pelayanan::query();
         $query->whereNotNull('koreksi')
               ->where('koreksi', '>', 0);
 
-        // Sorting
+      
         $sortBy = $request->get('sort_by', 'created_at');
         $sortOrder = $request->get('sort_order', 'desc');
         
@@ -30,7 +28,6 @@ class KoreksiSlaController extends Controller
         
         $pelayanan = $query->get();
 
-        // Format tanggal agar bisa dipakai di view
         foreach ($pelayanan as $item) {
             $item->tgl_bast_formatted = $item->tgl_bast ? date('d-m-Y', strtotime($item->tgl_bast)) : null;
             $item->tgl_bakb_formatted = $item->tgl_bakb ? date('d-m-Y', strtotime($item->tgl_bakb)) : null;
@@ -43,25 +40,32 @@ class KoreksiSlaController extends Controller
         return view('koreksi.index', compact('pelayanan', 'sortBy', 'sortOrder'));
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
+    
     public function edit($id)
-    {
-        $pelayanan = Pelayanan::findOrFail($id);
-        
-        // Format dates for form input
-        $pelayanan->tgl_reg_boa_formatted = $pelayanan->tgl_reg_boa ? date('Y-m-d', strtotime($pelayanan->tgl_reg_boa)) : null;
-        $pelayanan->tgl_bayar_formatted = $pelayanan->tgl_bayar ? date('Y-m-d', strtotime($pelayanan->tgl_bayar)) : null;
-        
-        return view('koreksi.edit', compact('pelayanan'));
+{
+       if (!in_array(Auth::user()->role, ['admin', 'keuangan', 'finance'])) {
+        return redirect()->route('koreksi.index')
+            ->with('error', 'Anda tidak memiliki akses untuk edit penuh.');
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
+    $pelayanan = Pelayanan::findOrFail($id);
+
+    $pelayanan->tgl_reg_boa_formatted = $pelayanan->tgl_reg_boa ? date('Y-m-d', strtotime($pelayanan->tgl_reg_boa)) : null;
+    $pelayanan->tgl_bayar_formatted = $pelayanan->tgl_bayar ? date('Y-m-d', strtotime($pelayanan->tgl_bayar)) : null;
+
+    return view('koreksi.edit', compact('pelayanan'));
+}
+
+
+    
     public function update(Request $request, $id)
     {
+
+        if (!in_array(Auth::user()->role, ['admin', 'keuangan', 'finance'])) {
+            return redirect()->route('koreksi.index')
+                ->with('error', 'Anda tidak memiliki akses untuk update penuh.');
+        }
+
         $request->validate([
             'koreksi' => 'required|numeric|min:0',
             'tgl_reg_boa' => 'nullable|date',
@@ -71,8 +75,7 @@ class KoreksiSlaController extends Controller
         ]);
 
         $pelayanan = Pelayanan::findOrFail($id);
-        
-        // Hanya update field yang diizinkan untuk koreksi
+                
         $pelayanan->update([
             'koreksi' => $request->koreksi,
             'tgl_reg_boa' => $request->tgl_reg_boa,
@@ -90,8 +93,13 @@ class KoreksiSlaController extends Controller
      */
     public function destroy($id)
     {
-        // Optional: jika ingin menghapus data dari koreksi (reset ke monitoring)
-        $pelayanan = Pelayanan::findOrFail($id);
+
+         if (auth()->user()->role !== 'admin') {
+        abort(403, 'Akses ditolak. Hanya admin yang boleh menghapus data.');
+    }
+
+    $pelayanan = Pelayanan::findOrFail($id);
+    $pelayanan->delete();
         
         $pelayanan->update([
             'koreksi' => 0,
@@ -102,4 +110,39 @@ class KoreksiSlaController extends Controller
         return redirect()->route('koreksi.index')
             ->with('success', 'Data berhasil dikembalikan ke monitoring SLA.');
     }
+
+    
+    // public function tambahBayar($id)
+    // {
+     
+    //     if (!in_array(Auth::user()->role, ['admin', 'finance'])) {
+    //         return redirect()->route('koreksi-sla.index')
+    //             ->with('error', 'Anda tidak memiliki akses untuk menambah tanggal bayar.');
+    //     }
+
+    //     $pelayanan = Pelayanan::findOrFail($id);
+    //     return view('koreksi-sla.tambah-bayar', compact('pelayanan'));
+    // }
+
+    // public function simpanBayar(Request $request, $id)
+    // {
+    //     // Hanya finance yang bisa simpan tanggal bayar
+    //     if (!in_array(Auth::user()->role, ['admin', 'finance'])) {
+    //         return redirect()->route('koreksi-sla.index')
+    //             ->with('error', 'Anda tidak memiliki akses untuk menyimpan tanggal bayar.');
+    //     }
+
+    //     $request->validate([
+    //         'tgl_bayar' => 'required|date',
+    //     ]);
+
+    //     $pelayanan = Pelayanan::findOrFail($id);
+    //     $pelayanan->update([
+    //         'tgl_bayar' => $request->tgl_bayar,
+    //     ]);
+
+    //     return redirect()->route('koreksi-sla.index')
+    //         ->with('success', 'Tanggal bayar berhasil ditambahkan.');
+    // }
+
 }

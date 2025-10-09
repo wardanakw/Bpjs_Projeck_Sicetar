@@ -3,139 +3,94 @@
 @section('title', 'Rekap Buku Register Klaim')
 
 @section('content')
-
+<link rel="stylesheet" href="https://cdn.datatables.net/1.13.7/css/dataTables.bootstrap5.min.css">
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+<script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/1.13.7/js/dataTables.bootstrap5.min.js"></script>
 
 <style>
-.badge {
-    font-size: 0.85em;
-}
-.table th {
-    background-color: #2e4a7d;
-    color: white;
-    font-weight: 600;
-}
-.table thead th{
-    position : sticky;
-    top: 0;
-    background-color: #2e4a7d;
-    color: white;
-    z-index: 2;
-    
-}
+.badge { font-size: 0.85em; }
+
 .card {
     border: none;
-    border-radius: 10px;
+    border-radius: 15px;
+    padding: 1rem;
+    box-shadow: 0 6px 20px rgba(0,0,0,0.1);
 }
-.card-header {
-    border-radius: 10px 10px 0 0;
-}
-.table-responsive {
-    max-height: 400px; 
+
+
+.table-container {
+    max-height: 500px;        
     overflow-y: auto;
-    positition: relative;
+    overflow-x: auto;
+    position: relative;
 }
-.table-responsive table{
+
+
+.table {
+    width: 100%;
     margin-bottom: 0;
+    table-layout: auto;
+}
+
+
+.table thead th {
+    position: sticky;
+    top: 0;
+    z-index: 20;
+    background-color: #2e4a7d !important;
+    color: #fff;
+    font-weight: 600;
+    box-shadow: 0 2px 2px -1px rgba(0,0,0,0.4);
 }
 </style>
+
 <div class="container-fluid">
-    <div class="row mb-4">
-        <div class="col-12">
-            <div class="d-flex justify-content-between align-items-center">
-                <h3 class="mb-0">Rekap Buku Register Klaim</h3>
-                
-            </div>
+    <div class="row mb-3">
+        <div class="col-md-6">
+            <h3 class="mb-0">Rekap Buku Register Klaim</h3>
+        </div>
+        <div class="col-md-6 text-end">
+            <input type="text" id="customSearch" class="form-control w-50 d-inline-block" placeholder="Cari data...">
         </div>
     </div>
 
-    <div class="row g-4">
-        <div class="col-12 col-lg-4">
-            <div class="card shadow h-100">
-                <div class="card-header bg-primary text-white rounded-top">
-                    <h6 class="mb-0">Filter Data</h6>
-                </div>
-                <div class="card-body">
-                    <form action="{{ route('rekap.index') }}" method="GET">
-                        <div class="row g-2">
-                            <div class="col-12">
-                                <label for="bulan" class="form-label">Bulan</label>
-                                <select class="form-select" id="bulan" name="bulan">
-                                    <option value="">Semua Bulan</option>
-                                    @for($i = 1; $i <= 12; $i++)
-                                        <option value="{{ $i }}" {{ request('bulan') == $i ? 'selected' : '' }}>
-                                            {{ DateTime::createFromFormat('!m', $i)->format('F') }}
-                                        </option>
-                                    @endfor
-                                </select>
-                            </div>
-                            <div class="col-12">
-                                <label for="tahun" class="form-label">Tahun</label>
-                                {{-- Dropdown Tahun --}}
-<select class="form-select" id="tahun" name="tahun">
-    <option value="">Semua Tahun</option>
-    @for($i = date('Y'); $i >= 2023; $i--)
-        <option value="{{ $i }}" {{ request('tahun') == $i ? 'selected' : '' }}>
-            {{ $i }}
-        </option>
-    @endfor
-</select>
-                            </div>
-                            <div class="col-12">
-                                <label for="tgl_reg_boa" class="form-label">Tanggal BoA</label>
-                                <input type="date" class="form-control" id="tgl_reg_boa" name="tgl_reg_boa"
-                                       value="{{ request('tgl_reg_boa') }}" placeholder="Pilih Tanggal BoA...">
-                            </div>
-                            <div class="col-12">
-                                <label for="sort_by" class="form-label">Urutkan Berdasarkan</label>
-                                <select class="form-select" id="sort_by" name="sort_by">
-                                    <option value="bulan_pelayanan" {{ request('sort_by') == 'bulan_pelayanan' ? 'selected' : '' }}>Bulan Pelayanan</option>
-                                    <option value="tgl_reg_boa" {{ request('sort_by') == 'tgl_reg_boa' ? 'selected' : '' }}>Tanggal Reg BoA</option>
-                                    <option value="created_at" {{ request('sort_by') == 'created_at' ? 'selected' : '' }}>Tanggal Input</option>
-                                    <option value="nama_fkrtl" {{ request('sort_by') == 'nama_fkrtl' ? 'selected' : '' }}>Nama FKRTL</option>
-                                </select>
-                            </div>
-                        </div>
-                        <div class="d-flex gap-2 mt-3">
-                            <button type="submit" class="btn btn-primary">
-                                <i class="fas fa-filter"></i> Terapkan Filter
-                            </button>
-                            <a href="{{ route('rekap.index') }}" class="btn btn-secondary">
-                                <i class="fas fa-sync"></i> Reset Filter
-                            </a>
-                        </div>
-                    </form>
-                </div>
-            </div>
-        </div>
-
-        <div class="col-12 col-lg-8">
+      <div class="row g-4">
+        <div class="col-12">
             <div class="card shadow mb-4">
                 <div class="card-body">
                     <div class="table-responsive">
-                        <table class="table table-bordered table-striped align-middle">
+                        <table class="table table-bordered table-striped align-middle" id="rekapTable">
                             <thead class="table-primary">
                                 <tr>
                                     <th>Reg BoA</th>
                                     <th>Bulan Pelayanan</th>
                                     <th>Nama FKRTL</th>
-                            <th>Jenis Pelayanan</th>
-                            <th>Jumlah Kasus</th>
-                            <th>Biaya</th>
-                            <th>Tanggal BAST</th>
-                            <th>No. BAST</th>
-                            <th>Tanggal BAKB</th>
-                            <th>No. BAKB</th>
-                            <th>Tanggal BAHV</th>
-                            <th>No. BAHV</th>
-                            <th>Kasus HV</th>
-                            <th>Biaya HV</th>
-                            <th>UMK</th>
-                            <th>Koreksi</th>
-                            <th>Tanggal Jatuh Tempo</th>
-                            <th>Tanggal Bayar</th>
-                            <th>Status</th>
-                            <th>Memorial</th>
-                            <th>Voucher</th>
+                                    <th>Jenis Pelayanan</th>
+                                    <th>Jumlah Kasus</th>
+                                    <th>Biaya</th>
+                                    <th>Tanggal BAST</th>
+                                    <th>No. BAST</th>
+                                    <th>Tanggal BAKB</th>
+                                    <th>No. BAKB</th>
+                                    <th>Tanggal BAHV</th>
+                                    <th>No. BAHV</th>
+                                    <th>Kasus HV</th>
+                                    <th>Biaya HV</th>
+                                    <th>Kasus Pending</th>
+                                    <th>Biaya Pending</th>
+                                    <th>Kasus TL</th>
+                                    <th>Biaya TL</th>
+                                    <th>Kasus Dispute</th>
+                                    <th>Biaya Dispute</th>
+                                    <th>UMK</th>
+                                    <th>Koreksi</th>
+                                    <th>Tanggal Jatuh Tempo</th>
+                                    <th>Tanggal Bayar</th>
+                                    <th>Status</th>
+                                    <th>Memorial</th>
+                                    <th>Voucher</th>
+                                    <th style="width: 60px;">Aksi</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -156,15 +111,21 @@
                                     <td class="text-center">{{ $data->jumlah_kasus }}</td>
                                     <td class="text-end">Rp {{ number_format($data->biaya, 0, ',', '.') }}</td>
                                     <td>{{ $data->tgl_bast_formatted }}</td>
-                                     <td>{{ $data->no_bast }}</td>
+                                    <td>{{ $data->no_bast }}</td>
                                     <td>{{ $data->tgl_bakb_formatted }}</td>
                                     <td>{{ $data->no_bakb }}</td>
                                     <td>{{ $data->tgl_bahv_formatted }}</td>
                                     <td>{{ $data->no_bahv }}</td>
                                     <td>{{ $data->kasus_hv }}</td>
                                     <td>Rp. {{ number_format($data->biaya_hv, 0, ',', '.') }}</td>
-                                <td>Rp. {{ number_format($data->umk, 0, ',', '.') }}</td>
-                                <td>Rp. {{ number_format($data->koreksi, 0, ',', '.') }}</td>
+                                    <td>{{ $data->kasus_pending }}</td>
+                                    <td>Rp. {{ number_format($data->biaya_pending, 0, ',', '.') }}</td>
+                                    <td>{{ $data->kasus_tidak_layak }}</td>
+                                    <td>Rp. {{ number_format($data->biaya_tidak_layak, 0, ',', '.') }}</td>
+                                    <td>{{ $data->kasus_dispute }}</td>
+                                    <td>Rp. {{ number_format($data->biaya_dispute, 0, ',', '.') }}</td>
+                                    <td>Rp. {{ number_format($data->umk, 0, ',', '.') }}</td>
+                                    <td>Rp. {{ number_format($data->koreksi, 0, ',', '.') }}</td>
                                     <td>{{ $data->tgl_jt_formatted }}</td>
                                     <td>
                                     {{ $data->tgl_bayar ? date('d-m-Y', strtotime($data->tgl_bayar)) : '-' }}
@@ -178,61 +139,90 @@
                                     </td>
                                        <td>{{ $data->memorial }}</td>
                                 <td>{{ $data->voucher }}</td>
+                                <td>
+                                    <a href="{{ route('rekap.edit', $data->id) }}" class="btn btn-warning btn-sm">
+                                        <i class="fas fa-edit"></i> Edit
+                                    </a>
+                                </td>
                                 </tr>
-                                @empty
-                                <tr>
-                                    <td colspan="11" class="text-center">Tidak ada data yang ditemukan</td>
-                                </tr>
+                               @empty
+                                    <tr class="text-center table-light">
+                                        @for ($i = 0; $i < 20; $i++)
+                                            <td class="{{ $i === 0 ? '' : 'd-none' }}" colspan="{{ $i === 0 ? 20 : '' }}">
+                                                @if ($i === 0)
+                                                    <div class="py-3 text-muted fw-semibold">
+                                                        Tidak ada data yang ditemukan
+                                                    </div>
+                                                @endif
+                                            </td>
+                                        @endfor
+                                    </tr>
                                 @endforelse
                             </tbody>
                         </table>
                     </div>
-                    @if($rekapData->hasPages())
-                    <div class="d-flex justify-content-center mt-4">
-                        {{ $rekapData->appends(request()->query())->links() }}
-                    </div>
-                    @endif
                 </div>
             </div>
-
-            <div class="row g-3">
-                <div class="col-md-4">
-                    <div class="card bg-light h-100">
-                        <div class="card-body text-center">
-                            <h6 class="mb-2">Total Data</h6>
-                            <h3 class="mb-0">{{ $rekapData->total() }}</h3>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-4">
-                    <div class="card bg-success text-white h-100">
-                        <div class="card-body text-center">
-                            <h6 class="mb-2">Selesai</h6>
-                            <h3 class="mb-0">{{ $rekapData->where('tgl_reg_boa', '!=', null)->count() }}</h3>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-4">
-                    <div class="card bg-warning h-100">
-                        <div class="card-body text-center">
-                            <h6 class="mb-2">Dalam Proses</h6>
-                            <h3 class="mb-0">{{ $rekapData->where('tgl_reg_boa', null)->count() }}</h3>
-                        </div>
-                    </div>
-                </div>
+    <div class="row">
+        <div class="col-md-4">
+            <div class="card bg-light text-center p-3">
+                <h6>Total Data</h6>
+                <h3>{{ $rekapData->total() }}</h3>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card bg-success text-white text-center p-3">
+                <h6>Selesai</h6>
+                <h3>{{ $rekapData->where('tgl_reg_boa','!=',null)->count() }}</h3>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card bg-warning text-center p-3">
+                <h6>Dalam Proses</h6>
+                <h3>{{ $rekapData->where('tgl_reg_boa',null)->count() }}</h3>
             </div>
         </div>
     </div>
 </div>
-@endsection
 
-@push('scripts')
 <script>
-function exportRekap() {
-    const params = new URLSearchParams(window.location.search);
-    window.location.href = '{{ route("rekap.export") }}?' + params.toString();
-}
+$(document).ready(function () {
+    const table = $('#rekapTable').DataTable({
+        paging: true,
+        lengthChange: false,
+        searching: true,
+        ordering: true,
+        info: true,
+        autoWidth: false,
+        responsive: true,
+        dom: 't<"bottom"ip>',
+        language: {
+            emptyTable: "Tidak ada data yang ditemukan",
+            zeroRecords: "Tidak ada data yang cocok",
+            search: "Cari:",
+            lengthMenu: "Tampilkan MENU entri",
+            infoEmpty: "Menampilkan 0 hingga 0 dari 0 entri",
+            infoFiltered: "(disaring dari MAX total entri)",
+            paginate: {
+                first: "Pertama", last: "Terakhir", next: "Selanjutnya", previous: "Sebelumnya"
+            }
+        }
+    });
+
+    $('#customSearch').on('keyup', function () {
+        table.search(this.value).draw();
+    });
+});
+$('#slaTable').on('draw.dt', function () {
+    let table = $('#slaTable').DataTable();
+    if (table.data().count() === 0) {
+        $('#slaTable tbody').html(`
+            <tr>
+                <td colspan="20" class="text-center">Tidak ada data yang ditemukan</td>
+            </tr>
+        `);
+    }
+});
 
 </script>
-@endpush
-
+@endsection

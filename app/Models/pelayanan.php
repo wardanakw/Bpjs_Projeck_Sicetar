@@ -32,8 +32,15 @@ class Pelayanan extends Model
         'tgl_reg_boa',
         'tgl_jt',
         'tgl_bayar',
-        'memorial',
-        'voucher',
-        'detail_pelyanan'
+        'memorial_pdf',
+        'voucher_pdf',
+        'detail_pelyanan',
+        'kasus_pending',
+        'biaya_pending',
+        'kasus_tidak_layak', 
+        'biaya_tidak_layak',
+        'kasus_dispute',
+        'biaya_dispute'
     ];
+    
 }

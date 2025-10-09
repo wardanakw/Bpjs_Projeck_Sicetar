@@ -8,8 +8,10 @@ use Maatwebsite\Excel\Concerns\WithHeadings;
 use Maatwebsite\Excel\Concerns\WithMapping;
 use Maatwebsite\Excel\Concerns\WithStyles;
 use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
+use Carbon\Carbon;
 
-class PelayananExport implements FromCollection, WithHeadings, WithMapping, WithStyles
+
+class PelayananExport implements FromCollection, WithHeadings, WithMapping
 {
     protected $bulan;
     protected $tahun;
@@ -25,19 +27,21 @@ class PelayananExport implements FromCollection, WithHeadings, WithMapping, With
     public function collection()
     {
         $query = Pelayanan::query();
-    
+        
+       
+        if ($this->bulan && $this->tahun) {
+            $startDate = Carbon::create($this->tahun, $this->bulan, 1)->startOfMonth();
+            $endDate = Carbon::create($this->tahun, $this->bulan, 1)->endOfMonth();
+            
+            $query->whereBetween('tgl_bast', [$startDate, $endDate]);
+        }
+        
+        
         if ($this->hanyaRegBoa) {
             $query->whereNotNull('tgl_reg_boa');
         }
         
-        if ($this->bulan && $this->tahun) {
-            $query->whereYear('bulan_pelayanan', $this->tahun)
-                  ->whereMonth('bulan_pelayanan', $this->bulan);
-        }
-        
-        return $query->orderBy('bulan_pelayanan', 'desc')
-                    ->orderBy('created_at', 'desc')
-                    ->get();
+        return $query->orderBy('tgl_bast')->get();
     }
 
     public function headings(): array
@@ -49,64 +53,58 @@ class PelayananExport implements FromCollection, WithHeadings, WithMapping, With
             'Jumlah Kasus',
             'Biaya',
             'Tanggal BAST',
-            'No BAST',
-            'Max Tanggal BAKB',
+            'No. BAST',
             'Tanggal BAKB',
-            'No BAKB',
-            'Max Tanggal BAHV',
+            'No. BAKB',
             'Tanggal BAHV',
-            'No BAHV',
+            'No. BAHV',
             'Kasus HV',
             'Biaya HV',
+            'Kasus Pending',
+            'Biaya Pending',
+            'Kasus Tidak Layak',
+            'Biaya Tidak Layak',
+            'Kasus Dispute',
+            'Biaya Dispute',
             'UMK',
             'Koreksi',
             'Tanggal Reg BoA',
+            'Tanggal Bayar',
             'Tanggal Jatuh Tempo',
             'Memorial',
-            'Voucher',
-            'Status',
-            'Tanggal Dibuat'
+            'Voucher'
         ];
     }
 
     public function map($pelayanan): array
     {
-        
-        $maxTglBakb = $pelayanan->tgl_bast ? date('d-m-Y', strtotime($pelayanan->tgl_bast . ' +9 days')) : '';
-        $maxTglBahv = $pelayanan->tgl_bast ? date('d-m-Y', strtotime($maxTglBakb . ' +9 days')) : '';
-        $tglJt = $pelayanan->tgl_bast ? date('d-m-Y', strtotime($maxTglBakb . ' +14 days')) : '';
-  
-        if ($pelayanan->tgl_bakb) {
-            $maxTglBahv = date('d-m-Y', strtotime($pelayanan->tgl_bakb . ' +9 days'));
-            $tglJt = date('d-m-Y', strtotime($pelayanan->tgl_bakb . ' +14 days'));
-        }
-        
-        $status = $pelayanan->tgl_reg_boa ? 'SELESAI' : 'PROSES';
-
         return [
             $pelayanan->nama_fkrtl,
-            $pelayanan->bulan_pelayanan ? date('F Y', strtotime($pelayanan->bulan_pelayanan)) : '',
+            $pelayanan->bulan_pelayanan ? Carbon::parse($pelayanan->bulan_pelayanan)->format('F Y') : '',
             $pelayanan->jenis_pelayanan,
             $pelayanan->jumlah_kasus,
-            'Rp ' . number_format($pelayanan->biaya, 0, ',', '.'),
-            $pelayanan->tgl_bast ? date('d-m-Y', strtotime($pelayanan->tgl_bast)) : '',
+            $pelayanan->biaya,
+            $pelayanan->tgl_bast ? Carbon::parse($pelayanan->tgl_bast)->format('d-m-Y') : '',
             $pelayanan->no_bast,
-            $maxTglBakb,
-            $pelayanan->tgl_bakb ? date('d-m-Y', strtotime($pelayanan->tgl_bakb)) : '',
+            $pelayanan->tgl_bakb ? Carbon::parse($pelayanan->tgl_bakb)->format('d-m-Y') : '',
             $pelayanan->no_bakb,
-            $maxTglBahv,
-            $pelayanan->tgl_bahv ? date('d-m-Y', strtotime($pelayanan->tgl_bahv)) : '',
+            $pelayanan->tgl_bahv ? Carbon::parse($pelayanan->tgl_bahv)->format('d-m-Y') : '',
             $pelayanan->no_bahv,
             $pelayanan->kasus_hv,
-            $pelayanan->biaya_hv ? 'Rp ' . number_format($pelayanan->biaya_hv, 0, ',', '.') : '',
-            $pelayanan->umk ? 'Rp ' . number_format($pelayanan->umk, 0, ',', '.') : '',
-            $pelayanan->koreksi ? 'Rp ' . number_format($pelayanan->koreksi, 0, ',', '.') : '',
-            $pelayanan->tgl_reg_boa ? date('d-m-Y', strtotime($pelayanan->tgl_reg_boa)) : '',
-            $pelayanan->tgl_jt ? date('d-m-Y', strtotime($pelayanan->tgl_jt)) : $tglJt,
+            $pelayanan->biaya_hv,
+            $pelayanan->kasus_pending,
+            $pelayanan->biaya_pending,
+            $pelayanan->kasus_tidak_layak,
+            $pelayanan->biaya_tidak_layak,
+            $pelayanan->kasus_dispute,
+            $pelayanan->biaya_dispute,
+            $pelayanan->umk,
+            $pelayanan->koreksi,
+            $pelayanan->tgl_reg_boa ? Carbon::parse($pelayanan->tgl_reg_boa)->format('d-m-Y') : '',
+            $pelayanan->tgl_bayar ? Carbon::parse($pelayanan->tgl_bayar)->format('d-m-Y') : '',
+            $pelayanan->tgl_jt ? Carbon::parse($pelayanan->tgl_jt)->format('d-m-Y') : '',
             $pelayanan->memorial,
             $pelayanan->voucher,
-            $status,
-            $pelayanan->created_at ? date('d-m-Y H:i', strtotime($pelayanan->created_at)) : ''
         ];
     }
 
@@ -115,7 +113,6 @@ class PelayananExport implements FromCollection, WithHeadings, WithMapping, With
         return [
             
             1 => ['font' => ['bold' => true]],
-            
             
             'A' => ['width' => 25],  
             'B' => ['width' => 15],  

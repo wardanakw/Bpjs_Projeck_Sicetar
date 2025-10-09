@@ -9,6 +9,7 @@ class FkrtlController extends Controller
 {
     public function index(Request $request)
     {
+
         $search = $request->input('search');
         
         $fkrtl = Fkrtl::when($search, function ($query, $search) {

@@ -7,6 +7,8 @@
 <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 <script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js"></script>
 <script src="https://cdn.datatables.net/1.13.7/js/dataTables.bootstrap5.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
 
 <div class="container-fluid">
     <div class="row mb-4">
@@ -15,7 +17,7 @@
                 <h3>Monitoring SLA</h3>
                 <div class="d-flex gap-2">
                   
-                    <div class="dropdown">
+                    <!-- <div class="dropdown">
                         <button class="btn btn-outline-primary dropdown-toggle" type="button" data-bs-toggle="dropdown">
                             <i class="fas fa-sort"></i> Urutkan
                         </button>
@@ -24,7 +26,7 @@
                             <li><a class="dropdown-item" href="{{ request()->fullUrlWithQuery(['sort_by' => 'max_tgl_bahv', 'sort_order' => 'asc']) }}">Tanggal Max BAHV (A-Z)</a></li>
                             <li><a class="dropdown-item" href="{{ request()->fullUrlWithQuery(['sort_by' => 'tgl_jt', 'sort_order' => 'asc']) }}">Tanggal JT (A-Z)</a></li>
                         </ul>
-                    </div>
+                    </div> -->
 
                  
                     <!-- <a href="{{ request()->fullUrlWithQuery(['hide_completed' => request('hide_completed') == '1' ? '0' : '1']) }}" 
@@ -38,12 +40,13 @@
         </div>
     </div>
 
-    {{-- Pesan sukses --}}
-    @if ($message = Session::get('success'))
-        <div class="alert alert-success">
-            {{ $message }}
-        </div>
-    @endif
+  @if(session('success'))
+    <div class="alert alert-success alert-dismissible fade show mt-3" role="alert">
+        {{ session('success') }}
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+@endif
+
 
     <div class="card shadow">
         <div class="card-body">
@@ -70,8 +73,6 @@
                             <th>Koreksi</th>
                             <th>Tanggal Reg BoA</th>
                             <th>Tanggal Jatuh Tempo</th>
-                            <th>Memorial</th>
-                            <th>Voucher</th>
                             <th>Aksi</th>
                         </tr>
                     </thead>
@@ -103,28 +104,39 @@
                                     @endif
                                 </td>
                                 <td>{{ $data->tgl_jt_formatted ?? '' }}</td>
-                                <td>{{ $data->memorial }}</td>
-                                <td>{{ $data->voucher }}</td>
                                 <td>
+                                    @if(auth()->user()->role === 'admin')
                                     <div class="btn-group">
                                         <a href="{{ route('pelayanan.edit', $data->id) }}" class="btn btn-sm btn-warning">
-                                            <i class="fas fa-edit"></i>
+                                            <i class="fas fa-edit"></i> Edit
                                         </a>
-                                        <form action="{{ route('pelayanan.destroy', $data->id) }}" method="POST">
+                                       <form action="{{ route('pelayanan.destroy', $data->id) }}" method="POST" class="d-inline form-delete">
                                             @csrf
                                             @method('DELETE')
-                                            <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Yakin hapus data ini?')">
-                                                <i class="fas fa-trash"></i>
+                                            <button type="button" class="btn btn-sm btn-danger btn-delete">
+                                                <i class="fas fa-trash-alt"></i> Hapus
                                             </button>
                                         </form>
+
                                     </div>
+                                    @endif
                                 </td>
                             </tr>
-                        @empty
-                            <tr>
-                                <td colspan="22" class="text-center">Tidak ada data yang ditemukan</td>
-                            </tr>
-                        @endforelse
+                               @empty
+                                    <tr class="text-center table-light">
+                                        @for ($i = 0; $i < 20; $i++)
+                                            <td class="{{ $i === 0 ? '' : 'd-none' }}" colspan="{{ $i === 0 ? 20 : '' }}">
+                                                @if ($i === 0)
+                                                    <div class="py-3 text-muted fw-semibold">
+                                                        Tidak ada data yang ditemukan
+                                                    </div>
+                                                @endif
+                                            </td>
+                                        @endfor
+                                    </tr>
+                                @endforelse
+
+
                     </tbody>
                 </table>
             </div>
@@ -160,5 +172,50 @@
             }
         });
     });
+$('#slaTable').on('draw.dt', function () {
+    let table = $('#slaTable').DataTable();
+    if (table.data().count() === 0) {
+        $('#slaTable tbody').html(`
+            <tr>
+                <td colspan="20" class="text-center">Tidak ada data yang ditemukan</td>
+            </tr>
+        `);
+    }
+});
+
+document.addEventListener('DOMContentLoaded', function () {
+    const deleteForms = document.querySelectorAll('.form-delete');
+
+    deleteForms.forEach(form => {
+        form.querySelector('.btn-delete').addEventListener('click', function (e) {
+            e.preventDefault();
+            Swal.fire({
+                title: 'Apakah Anda yakin?',
+                text: "Data yang dihapus tidak bisa dikembalikan!",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#d33',
+                cancelButtonColor: '#6c757d',
+                confirmButtonText: 'Ya, hapus!',
+                cancelButtonText: 'Batal'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    form.submit();
+                }
+            });
+        });
+    });
+
+    @if(session('success'))
+        Swal.fire({
+            icon: 'success',
+            title: 'Berhasil',
+            text: "{{ session('success') }}",
+            timer: 2000,
+            showConfirmButton: false
+        });
+    @endif
+});
+
 </script>
 @endsection

@@ -40,8 +40,8 @@
         border-bottom: 1px solid rgba(255,255,255,0.1);
         white-space: nowrap;
         overflow: hidden;
-        font-weight: 700; /* membuat bold */
-        font-family: 'Poppins', 'Segoe UI', 'Arial', sans-serif; /* font unik */
+        font-weight: 700; 
+        font-family: 'Poppins', 'Segoe UI', 'Arial', sans-serif; 
         }
 
         .sidebar.collapsed h2 {
@@ -159,7 +159,7 @@
         }
         table th, table td {
             vertical-align: middle;
-            padding: 12px 24px;
+            padding: 6px 8px;
             border: 1px solid #dee2e6;
             text-align: center;
             font-size: 15px;
@@ -236,8 +236,6 @@
             border-radius: 4px;
             font-size: 12px;
         }
-
-       
         .form-control, .form-select {
             border-radius: 6px;
             border: 1px solid #ced4da;
@@ -250,8 +248,6 @@
             background: #f8f9fa;
             border: 1px solid #ced4da;
         }
-
-     
         .btn-primary {
             background: #2e4a7d;
             border-color: #2e4a7d;
@@ -355,20 +351,148 @@
             flex: 1 1 0;
             min-width: 280px;
         }
+    .no-input {
+        max-width: 70px;
+    }
+    .date-input {
+        max-width: 150px; 
+    }
+        
     </style>
 </head>
 <body>
+  <body>
     <div class="layout">
         <div class="sidebar">
             <h2>{{ config('app.name', 'SICETAR') }} </h2>
             <ul>
-                <li><a href="{{ route('dashboard') }}"><i class="fas fa-tachometer-alt"></i><span>Dashboard</span></a></li>
-                <li><a href="{{ route('fkrtl.index') }}"><i class="fas fa-hospital"></i><span>Menu FKRTL</span></a></li>
-                <li><a href="{{ route('pelayanan.index') }}"><i class="fas fa-chart-line"></i><span>Monitoring SLA</span></a></li>
-                <li><a href="{{ route('koreksi.index') }}"><i class="fas fa-edit"></i><span>Koreksi SLA</span></a></li>
-                <li><a href="{{ route('export.index')}}"><i class="fas fa-file-export"></i><span>Export SLA</span></a></li>
-                <li><a href="{{ route('rekap.index') }}"><i class="fas fa-book"></i><span>Rekap Register Klaim</span></a></li>
-            </ul>
+                <li>
+                    <a href="{{ route('dashboard') }}">
+                        <i class="fas fa-tachometer-alt"></i>
+                        <span>Dashboard</span>
+                    </a>
+                </li>
+
+            
+@if(auth()->user()->role === 'admin')
+    <li>
+        <a href="{{ route('fkrtl.index') }}">
+            <i class="fas fa-hospital"></i>
+            <span>Menu FKRTL</span>
+        </a>
+    </li>
+    <li>
+        <a href="{{ route('pelayanan.index') }}">
+            <i class="fas fa-chart-line"></i>
+            <span>Monitoring SLA</span>
+        </a>
+    </li>
+    <li>
+        <a href="{{ route('koreksi.index') }}">
+            <i class="fas fa-edit"></i>
+            <span>Koreksi SLA</span>
+        </a>
+    </li>
+    <li>
+        <a href="{{ route('export.index') }}">
+            <i class="fas fa-file-export"></i>
+            <span>Export SLA</span>
+        </a>
+    </li>
+@endif
+
+
+@if(auth()->user()->role === 'finance')
+    <li>
+        <a href="{{ route('pelayanan.index') }}">
+            <i class="fas fa-chart-line"></i>
+            <span>Monitoring SLA</span>
+        </a>
+    </li>
+    <li>
+        <a href="{{ route('koreksi.index') }}">
+            <i class="fas fa-edit"></i>
+            <span>Koreksi SLA</span>
+        </a>
+    </li>
+    <li>
+        <a href="{{ route('export.index') }}">
+            <i class="fas fa-file-export"></i>
+            <span>Export SLA</span>
+        </a>
+    </li>
+    <li>
+        <a href="{{ route('rekap.index') }}">
+            <i class="fas fa-book"></i>
+            <span>Rekap Register Klaim</span>
+        </a>
+    </li>
+@endif
+
+
+@if(auth()->user()->role === 'keuangan')
+    <li>
+        <a href="{{ route('pelayanan.index') }}">
+            <i class="fas fa-chart-line"></i>
+            <span>Monitoring SLA</span>
+        </a>
+    </li>
+    <li>
+        <a href="{{ route('koreksi.index') }}">
+            <i class="fas fa-edit"></i>
+            <span>Koreksi SLA</span>
+        </a>
+    </li>
+    <li>
+        <a href="{{ route('rekap.index') }}">
+            <i class="fas fa-book"></i>
+            <span>Rekap Register Klaim</span>
+        </a>
+    </li>
+@endif
+
+@if(auth()->user()->role === 'verifikator')
+    <li>
+        <a href="{{ route('pelayanan.index') }}">
+            <i class="fas fa-chart-line"></i>
+            <span>Monitoring SLA</span>
+        </a>
+    </li>
+      <li>
+        <a href="{{ route('export.index') }}">
+            <i class="fas fa-file-export"></i>
+            <span>Export SLA</span>
+        </a>
+    </li>
+@endif
+
+@if(auth()->user()->role === 'PMU')
+    <li>
+        <a href="{{ route('pelayanan.index') }}">
+            <i class="fas fa-chart-line"></i>
+            <span>Monitoring SLA</span>
+        </a>
+    </li>
+    <li>
+        <a href="{{ route('koreksi.index') }}">
+            <i class="fas fa-edit"></i>
+            <span>Koreksi SLA</span>
+        </a>
+    </li>
+    <li>
+        <a href="{{ route('export.index') }}">
+            <i class="fas fa-file-export"></i>
+            <span>Export SLA</span>
+        </a>
+    </li>
+    <li>
+        <a href="{{ route('rekap.index') }}">
+            <i class="fas fa-book"></i>
+            <span>Rekap Register Klaim</span>
+        </a>
+    </li>
+@endif
+
         </div>
 
         <div class="topbar">
@@ -380,7 +504,10 @@
                     <div class="profile-icon">
                         <i class="fas fa-user"></i>
                     </div>
-                    <span class="profile-text">Admin</span>
+                    <span class="profile-text">
+    {{ auth()->user()->name }}
+</span>
+
                 </div>
                 <form method="POST" action="{{ route('logout') }}">
                     @csrf
@@ -399,7 +526,27 @@
         </div>
     </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <div class="modal fade" id="modalNotifikasiUpload" tabindex="-1" aria-labelledby="modalNotifikasiUploadLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="modalNotifikasiUploadLabel">Notifikasi Upload</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        {{-- Konten notifikasi upload --}}
+        <div class="alert alert-success" role="alert">
+          <i class="fas fa-check-circle"></i> File berhasil diunggah!
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
     <script>
         function toggleSidebar() {
             const sidebar = document.querySelector('.sidebar');
@@ -419,5 +566,6 @@
         window.addEventListener('load', checkScreenSize);
         window.addEventListener('resize', checkScreenSize);
     </script>
+    @stack('scripts')
 </body>
 </html>

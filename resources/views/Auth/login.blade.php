@@ -49,7 +49,7 @@
       border-radius: 10px;
       z-index: 1;
     }
-    /* Styling untuk captcha container */
+   
     .captcha-container {
       display: flex;
       align-items: center;
@@ -62,7 +62,7 @@
       background-color: #2A4D8B;
       color: white;
       border: none;
-      height: 38px; /* Sesuai dengan tinggi input */
+      height: 38px; 
       display: flex;
       align-items: center;
       justify-content: center;
@@ -79,8 +79,8 @@
       border-bottom: 1px solid rgba(255,255,255,0.1);
       white-space: nowrap;
       overflow: hidden;
-      font-weight: 700; /* membuat bold */
-      font-family: 'Poppins', 'Segoe UI', 'Arial', sans-serif; /* font unik */
+      font-weight: 700;
+      font-family: 'Poppins', 'Segoe UI', 'Arial', sans-serif; 
     }
   </style>
 </head>
@@ -167,13 +167,11 @@
         modal.show();
       }
 
-      // Fungsi untuk refresh captcha
       function refreshCaptcha() {
         const captchaImg = document.querySelector('.captcha-img');
         captchaImg.src = '{{ captcha_src() }}?' + Math.random();
       }
 
-      // Event listener untuk tombol refresh
       document.getElementById('refresh-captcha-btn').addEventListener('click', refreshCaptcha);
     });
   </script>
