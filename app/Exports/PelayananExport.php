@@ -10,37 +10,44 @@ use Maatwebsite\Excel\Concerns\WithStyles;
 use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
 use Carbon\Carbon;
 
-
-class PelayananExport implements FromCollection, WithHeadings, WithMapping
+class PelayananExport implements FromCollection, WithHeadings, WithMapping, WithStyles
 {
     protected $bulan;
     protected $tahun;
     protected $hanyaRegBoa;
+    protected $jt_dari;
+    protected $jt_sampai;
 
-    public function __construct($bulan = null, $tahun = null, $hanyaRegBoa = false)
+    public function __construct($bulan = null, $tahun = null, $hanyaRegBoa = false, $jt_dari = null, $jt_sampai = null)
     {
         $this->bulan = $bulan;
         $this->tahun = $tahun;
         $this->hanyaRegBoa = $hanyaRegBoa;
+        $this->jt_dari = $jt_dari;
+        $this->jt_sampai = $jt_sampai;
     }
 
     public function collection()
     {
         $query = Pelayanan::query();
-        
-       
-        if ($this->bulan && $this->tahun) {
-            $startDate = Carbon::create($this->tahun, $this->bulan, 1)->startOfMonth();
-            $endDate = Carbon::create($this->tahun, $this->bulan, 1)->endOfMonth();
-            
-            $query->whereBetween('tgl_bast', [$startDate, $endDate]);
-        }
-        
-        
+
         if ($this->hanyaRegBoa) {
             $query->whereNotNull('tgl_reg_boa');
         }
-        
+
+        if (!empty($this->jt_dari) && !empty($this->jt_sampai)) {
+            $query->whereBetween('tgl_jt', [
+                Carbon::parse($this->jt_dari)->startOfDay(),
+                Carbon::parse($this->jt_sampai)->endOfDay(),
+            ]);
+        }
+
+        if ($this->bulan && $this->tahun) {
+            $startDate = Carbon::create($this->tahun, $this->bulan, 1)->startOfMonth();
+            $endDate = Carbon::create($this->tahun, $this->bulan, 1)->endOfMonth();
+            $query->whereBetween('tgl_bast', [$startDate, $endDate]);
+        }
+
         return $query->orderBy('tgl_bast')->get();
     }
 

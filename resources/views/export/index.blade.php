@@ -14,7 +14,7 @@
                 
                 <div class="row mb-3">
                     <div class="col-md-6">
-                        <label for="bulan" class="form-label">Bulan BAST</label>
+                        <label for="bulan" class="form-label">Bulan Beban</label>
                         <select class="form-select" id="bulan" name="bulan" required>
                             <option value="">Pilih Bulan</option>
                             @for($i = 1; $i <= 12; $i++)
@@ -26,24 +26,34 @@
                     </div>
                     
                     <div class="col-md-6">
-    <label for="tahun" class="form-label">Tahun BAST</label>
-    <select class="form-select" id="tahun" name="tahun" required>
-        <option value="">Pilih Tahun</option>
-        @php
-            $currentYear = date('Y');
-            $startYear = $currentYear - 5; 
-        @endphp
+                        <label for="tahun" class="form-label">Tahun Beban</label>
+                        <select class="form-select" id="tahun" name="tahun" required>
+                            <option value="">Pilih Tahun</option>
+                            @php
+                                $currentYear = date('Y');
+                                $startYear = $currentYear - 5; 
+                            @endphp
 
-        @for($i = $startYear; $i <= $currentYear; $i++)
-            <option value="{{ $i }}" {{ old('tahun') == $i ? 'selected' : '' }}>
-                {{ $i }}
-            </option>
-        @endfor
-    </select>
-</div>
-
+                            @for($i = $startYear; $i <= $currentYear; $i++)
+                                <option value="{{ $i }}" {{ old('tahun') == $i ? 'selected' : '' }}>
+                                    {{ $i }}
+                                </option>
+                            @endfor
+                        </select>
+                    </div>
                 </div>
 
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <label for="jt_dari" class="form-label">Jatuh Tempo Dari</label>
+                        <input type="date" class="form-control" id="jt_dari" name="jt_dari" value="{{ old('jt_dari') }}">
+                    </div>
+                    <div class="col-md-6">
+                        <label for="jt_sampai" class="form-label">Jatuh Tempo Sampai</label>
+                        <input type="date" class="form-control" id="jt_sampai" name="jt_sampai" value="{{ old('jt_sampai') }}">
+                    </div>
+                </div>
+        
                 <div class="mb-3">
                     <div class="form-check">
                         <input class="form-check-input" type="checkbox" id="hanya_reg_boa" name="hanya_reg_boa" value="1">
@@ -64,6 +74,9 @@
                     <i class="fas fa-download"></i> Export Excel
                 </button>
             </form>
+
+            {{-- Tempat tampilkan info data --}}
+            <div id="data-info" class="mt-4 text-secondary"></div>
         </div>
     </div>
 </div>
@@ -79,7 +92,6 @@ document.addEventListener('DOMContentLoaded', function() {
         const tahun = tahunSelect.value;
 
         if (bulan && tahun) {
-     
             fetch(`/export/data-info?bulan=${bulan}&tahun=${tahun}`)
                 .then(response => response.json())
                 .then(data => {
