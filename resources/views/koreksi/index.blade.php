@@ -157,6 +157,8 @@
 </div>
 
 <script>
+    $.fn.dataTable.ext.errMode = 'none';
+    
     $(document).ready(function() {
         $('#koreksiSlaTable').DataTable({
             "paging": true,
@@ -219,16 +221,17 @@ document.addEventListener('DOMContentLoaded', function () {
     @endif
 });
 
-$('#slaTable').on('draw.dt', function () {
-    let table = $('#slaTable').DataTable();
-    if (table.data().count() === 0) {
-        $('#slaTable tbody').html(`
-            <tr>
-                <td colspan="20" class="text-center">Tidak ada data yang ditemukan</td>
-            </tr>
-        `);
-    }
-});
+ $('#koreksiSlaTable').on('draw.dt', function () {
+        if (table.data().count() === 0) {
+            $('#koreksiSlaTable tbody').html(`
+                <tr>
+                    <td colspan="23" class="text-center text-muted">
+                        Tidak ada data yang ditemukan
+                    </td>
+                </tr>
+            `);
+        }
+    });
 
 </script>
 @endsection

@@ -186,6 +186,8 @@
 </div>
 
 <script>
+    $.fn.dataTable.ext.errMode = 'none';
+
 $(document).ready(function () {
     const table = $('#rekapTable').DataTable({
         paging: true,
@@ -213,10 +215,10 @@ $(document).ready(function () {
         table.search(this.value).draw();
     });
 });
-$('#slaTable').on('draw.dt', function () {
-    let table = $('#slaTable').DataTable();
+$('#rekapTable').on('draw.dt', function () {
+    let table = $('#rekapTable').DataTable();
     if (table.data().count() === 0) {
-        $('#slaTable tbody').html(`
+        $('#rekapTable tbody').html(`
             <tr>
                 <td colspan="20" class="text-center">Tidak ada data yang ditemukan</td>
             </tr>
