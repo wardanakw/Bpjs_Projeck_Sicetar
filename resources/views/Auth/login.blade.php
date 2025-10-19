@@ -89,7 +89,7 @@
     <div class="row h-100">
       <div class="col-md-9 left-side">
         <div class="login-box">
-          <h4 class="mb-4 text-center">Login SICETAR</h4>
+          <h4 class="mb-4 text-center">Login Masuk CETAR</h4>
 
           <form method="POST" action="{{ route('login.submit') }}">
             @csrf

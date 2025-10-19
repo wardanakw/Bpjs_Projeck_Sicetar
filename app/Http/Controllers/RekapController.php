@@ -31,7 +31,7 @@ class RekapController extends Controller
         
         $query->orderBy($sortBy, $sortOrder);
         
-        $rekapData = $query->paginate(20);
+        $rekapData = $query->get();
 
         foreach ($rekapData as $item) {
             $item->bulan_pelayanan_formatted = $item->bulan_pelayanan ? date('F Y', strtotime($item->bulan_pelayanan)) : '';

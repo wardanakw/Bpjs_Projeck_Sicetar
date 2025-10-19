@@ -29,8 +29,7 @@ Route::middleware('auth')->group(function () {
 
     Route::middleware(['role:admin'])->group(function () {
         Route::resource('fkrtl', FkrtlController::class)->except(['show']);
-    });
-
+});
 
     Route::middleware(['role:admin,finance'])->group(function () {
         Route::prefix('pelayanan')->name('pelayanan.')->group(function () {

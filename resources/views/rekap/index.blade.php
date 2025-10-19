@@ -167,7 +167,7 @@
         <div class="col-md-4">
             <div class="card bg-light text-center p-3">
                 <h6>Total Data</h6>
-                <h3>{{ $rekapData->total() }}</h3>
+                <h3>{{ $rekapData->count() }}</h3>
             </div>
         </div>
         <div class="col-md-4">
@@ -190,26 +190,28 @@
 
 $(document).ready(function () {
     const table = $('#rekapTable').DataTable({
-        paging: true,
-        lengthChange: false,
-        searching: true,
-        ordering: true,
-        info: true,
-        autoWidth: false,
-        responsive: true,
-        dom: 't<"bottom"ip>',
-        language: {
-            emptyTable: "Tidak ada data yang ditemukan",
-            zeroRecords: "Tidak ada data yang cocok",
-            search: "Cari:",
-            lengthMenu: "Tampilkan MENU entri",
-            infoEmpty: "Menampilkan 0 hingga 0 dari 0 entri",
-            infoFiltered: "(disaring dari MAX total entri)",
-            paginate: {
-                first: "Pertama", last: "Terakhir", next: "Selanjutnya", previous: "Sebelumnya"
-            }
+    paging: true,
+    lengthChange: true,   
+    pageLength: 10,       
+    searching: true,
+    ordering: true,
+    info: true,
+    autoWidth: false,
+    responsive: true,
+    dom: 'lftip',        
+    language: {
+        emptyTable: "Tidak ada data yang ditemukan",
+        zeroRecords: "Tidak ada data yang cocok",
+        search: "Cari:",
+        lengthMenu: "Tampilkan _MENU_ data per halaman",
+        info: "Menampilkan _START_–_END_ dari _TOTAL_ data",
+        infoEmpty: "Menampilkan 0 dari 0 data",
+        paginate: {
+            first: "Pertama", last: "Terakhir", next: "Selanjutnya", previous: "Sebelumnya"
         }
-    });
+    }
+});
+
 
     $('#customSearch').on('keyup', function () {
         table.search(this.value).draw();

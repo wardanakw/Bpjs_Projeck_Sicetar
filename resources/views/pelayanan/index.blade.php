@@ -135,8 +135,6 @@
                                         @endfor
                                     </tr>
                                 @endforelse
-
-
                     </tbody>
                 </table>
             </div>
