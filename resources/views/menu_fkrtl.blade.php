@@ -58,19 +58,18 @@
             border-bottom: 2px solid #dee2e6;
         }
 
-        /* Column width hints for larger screens */
         @media (min-width: 992px) {
             #fkrtlTable th:nth-child(1),
-            #fkrtlTable td:nth-child(1) { width: 8%; }   /* ID */
+            #fkrtlTable td:nth-child(1) { width: 8%; }  
             #fkrtlTable th:nth-child(2),
-            #fkrtlTable td:nth-child(2) { width: 50%; }  /* Nama RS */
+            #fkrtlTable td:nth-child(2) { width: 50%; } 
             #fkrtlTable th:nth-child(3),
-            #fkrtlTable td:nth-child(3) { width: 15%; }  /* Jenis */
+            #fkrtlTable td:nth-child(3) { width: 15%; }  
             #fkrtlTable th:nth-child(4),
-            #fkrtlTable td:nth-child(4) { width: 12%; }  /* Aksi */
+            #fkrtlTable td:nth-child(4) { width: 12%; } 
         }
 
-        /* Button improvements */
+    
         .btn-sm {
             padding: 0.32rem 0.6rem;
             font-size: var(--font-xs);
@@ -81,14 +80,12 @@
             border-radius: 6px;
         }
 
-        /* Action buttons container */
         .action-buttons {
             display: flex;
             flex-direction: column;
             gap: 6px;
         }
 
-        /* Horizontal layout for buttons on larger screens */
         @media (min-width: 768px) {
             .action-buttons {
                 flex-direction: row;
@@ -96,7 +93,6 @@
             }
         }
 
-        /* search input */
         .dataTables_filter input[type="search"] {
             width: 220px !important;
             font-size: var(--font-sm);
@@ -105,14 +101,12 @@
             border: 1px solid #ced4da;
         }
 
-        /* Card header improvements */
         .card-header {
             background-color: #f8f9fa;
             border-bottom: 1px solid #e3e6f0;
             padding: 1rem 1.35rem;
         }
 
-        /* Toolbar improvements */
         .toolbar-container {
             display: flex;
             justify-content: space-between;
@@ -121,7 +115,6 @@
             gap: 1rem;
         }
 
-        /* compact look for small screens */
         @media (max-width: 991px) {
             .card.fkrtl-card { 
                 margin: 12px; 
@@ -140,7 +133,6 @@
             }
         }
 
-        /* stacking layout for very small screens */
         @media (max-width: 576px) {
             #fkrtlTable thead { display: none; }
             #fkrtlTable, #fkrtlTable tbody, #fkrtlTable tr, #fkrtlTable td { 
@@ -185,17 +177,14 @@
             }
         }
 
-        /* accessibility / hover */
         #fkrtlTable tbody tr:hover { 
             background: rgba(0,116,217,0.03); 
         }
-        
-        /* Table row improvements */
+     
         #fkrtlTable tbody tr {
             transition: all 0.2s ease;
         }
         
-        /* Modal improvements */
         .modal-content {
             border-radius: 10px;
             box-shadow: 0 5px 15px rgba(0,0,0,0.1);
@@ -231,7 +220,6 @@
                         <i class="fas fa-trash"></i> Hapus Data FKRTL
                     </a>
                 </div>
-                <!-- Search will be added by DataTables -->
             </div>
 
             <div class="table-responsive-custom">
@@ -330,7 +318,6 @@
         selectedId = $(this).find('td').first().text().trim();
     });
 
-    // ✅ Pindahkan kode ini ke dalam $(document).ready
     const form = document.getElementById('deleteSelectForm');
     const select = document.getElementById('fkrtl_id');
 

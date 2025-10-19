@@ -20,13 +20,12 @@ class FkrtlController extends Controller
 
         return view('menu_fkrtl', compact('fkrtl', 'search'));
     }
-    // 🔹 TAMPILKAN FORM TAMBAH
     public function create()
     {
         return view('fkrtl.create');
     }
 
-    // 🔹 SIMPAN DATA BARU
+
     public function store(Request $request)
     {
         $request->validate([
@@ -46,14 +45,13 @@ class FkrtlController extends Controller
         return redirect()->route('fkrtl.index')->with('success', 'Data FKRTL berhasil ditambahkan.');
     }
 
-    // 🔹 TAMPILKAN FORM EDIT
     public function edit($id_fkrtl)
     {
         $fkrtl = Fkrtl::findOrFail($id_fkrtl);
         return view('fkrtl.edit', compact('fkrtl'));
     }
 
-    // 🔹 UPDATE DATA
+
     public function update(Request $request, $id_fkrtl)
     {
         $fkrtl = Fkrtl::findOrFail($id_fkrtl);
@@ -73,7 +71,6 @@ class FkrtlController extends Controller
         return redirect()->route('fkrtl.index')->with('success', 'Data FKRTL berhasil diperbarui.');
     }
 
-    // 🔹 HAPUS DATA
   public function destroy($id_fkrtl)
 {
     try {
