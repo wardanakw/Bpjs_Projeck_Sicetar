@@ -214,6 +214,105 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     @endif
 });
+document.addEventListener('DOMContentLoaded', function () {
+    const deleteForms = document.querySelectorAll('.form-delete');
+
+    deleteForms.forEach(form => {
+        form.querySelector('.btn-delete').addEventListener('click', function (e) {
+            e.preventDefault();
+            Swal.fire({
+                title: 'Apakah Anda yakin?',
+                text: "Data yang dihapus tidak bisa dikembalikan!",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#d33',
+                cancelButtonColor: '#6c757d',
+                confirmButtonText: 'Ya, hapus!',
+                cancelButtonText: 'Batal'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    form.submit();
+                }
+            });
+        });
+    });
+
+    
+    const today = new Date().toISOString().split('T')[0]; 
+    let dataSamaTanggal = [];
+
+    document.querySelectorAll('#slaTable tbody tr').forEach(row => {
+        const tanggalBahv = row.cells[10]?.textContent.trim(); 
+        const namaFkrtl = row.cells[0]?.textContent.trim(); 
+        const jenisPelayanan = row.cells[2]?.textContent.trim(); 
+        const noBahv = row.cells[12]?.textContent.trim(); 
+
+        if (tanggalBahv) {
+            const parts = tanggalBahv.split('-'); 
+            if (parts.length === 3) {
+                const formattedDate = `${parts[2]}-${parts[1]}-${parts[0]}`;
+                if (formattedDate === today) {
+                    dataSamaTanggal.push({
+                        nama: namaFkrtl,
+                        jenis: jenisPelayanan,
+                        no_bahv: noBahv,
+                        tanggal: tanggalBahv
+                    });
+                }
+            }
+        }
+    });
+
+
+    if (dataSamaTanggal.length > 0) {
+        let tableHtml = `
+            <div style="overflow-x:auto;">
+                <table border="1" cellpadding="6" cellspacing="0" style="border-collapse:collapse;width:100%;text-align:left;font-size:14px;">
+                    <thead style="background-color:#007bff;color:white;">
+                        <tr>
+                            <th>No</th>
+                            <th>Nama FKRTL</th>
+                            <th>Jenis Pelayanan</th>
+                            <th>Max BAHV</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+        `;
+        dataSamaTanggal.forEach((item, index) => {
+            tableHtml += `
+                <tr>
+                    <td>${index + 1}</td>
+                    <td>${item.nama}</td>
+                    <td>${item.jenis}</td>
+                    <td>${item.tanggal}</td>
+                </tr>
+            `;
+        });
+        tableHtml += `
+                    </tbody>
+                </table>
+            </div>
+        `;
+
+        Swal.fire({
+            icon: 'info',
+            title: 'Data Max BAHV Hari Ini',
+            html: tableHtml,
+            width: 700,
+            confirmButtonText: 'Tutup',
+        });
+    }
+
+    @if(session('success'))
+        Swal.fire({
+            icon: 'success',
+            title: 'Berhasil',
+            text: "{{ session('success') }}",
+            timer: 2000,
+            showConfirmButton: false
+        });
+    @endif
+});
 
 </script>
 @endsection
