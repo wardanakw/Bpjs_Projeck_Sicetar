@@ -52,9 +52,17 @@
                             <th>No. BAHV</th>
                             <th>Kasus HV</th>
                             <th>Biaya HV</th>
+                            <th>Kasus Pending</th>
+                            <th>Biaya Pending</th>
+                            <th>Kasus TL</th>
+                            <th>Biaya TL</th>
+                            <th>Kasus Dispute</th>
+                            <th>Biaya Dispute</th>
                             <th>UMK</th>
                             <th>Koreksi</th>
+                            <th>Total Pembayaran</th>
                             <th>Tanggal Reg BoA</th>
+                            <th>No Register BOA</th>
                             <th>Tanggal Jatuh Tempo</th>
                             <th>Tanggal Bayar</th>
                             <th>Voucher</th>
@@ -80,8 +88,15 @@
                                 <td>{{ $data->no_bahv }}</td>
                                 <td>{{ $data->kasus_hv }}</td>
                                 <td>Rp. {{ number_format($data->biaya_hv, 0, ',', '.') }}</td>
+                                <td>{{ $data->kasus_pending }}</td>
+                                <td>Rp. {{ number_format($data->biaya_pending, 0, ',', '.') }}</td>
+                                <td>{{ $data->kasus_tidak_layak }}</td>
+                                <td>Rp. {{ number_format($data->biaya_tidak_layak, 0, ',', '.') }}</td>
+                                <td>{{ $data->kasus_dispute }}</td>
+                                <td>Rp. {{ number_format($data->biaya_dispute, 0, ',', '.') }}</td>
                                 <td>Rp. {{ number_format($data->umk, 0, ',', '.') }}</td>
                                 <td>Rp. {{ number_format($data->koreksi, 0, ',', '.') }}</td>
+                                <td>Rp {{ number_format($data->total_pembayaran, 0, ',', '.') }}</td>
                                 <td>
                                     @if($data->tgl_reg_boa)
                                         <span class="badge bg-success">{{ date('d-m-Y', strtotime($data->tgl_reg_boa)) }}</span>
@@ -89,6 +104,7 @@
                                         <span class="badge bg-secondary">-</span>
                                     @endif
                                 </td>
+                                <td>{{ $data->no_reg_boa ?? '-' }}</td>
                                 <td>{{ $data->tgl_jt_formatted ?? '' }}</td>
                                 <td>
                                     {{ $data->tgl_bayar ? date('d-m-Y', strtotime($data->tgl_bayar)) : '-' }}

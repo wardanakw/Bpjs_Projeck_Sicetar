@@ -85,7 +85,9 @@
                                     <th>Biaya Dispute</th>
                                     <th>UMK</th>
                                     <th>Koreksi</th>
+                                    <th>Total Bayar</th>
                                     <th>Tanggal Jatuh Tempo</th>
+                                    <th>No reg BoA</th>
                                     <th>Tanggal Bayar</th>
                                     <th>Status</th>
                                     <th>Memorial</th>
@@ -126,7 +128,9 @@
                                     <td>Rp. {{ number_format($data->biaya_dispute, 0, ',', '.') }}</td>
                                     <td>Rp. {{ number_format($data->umk, 0, ',', '.') }}</td>
                                     <td>Rp. {{ number_format($data->koreksi, 0, ',', '.') }}</td>
+                                    <td>Rp {{ number_format($data->total_pembayaran, 0, ',', '.') }}</td>
                                     <td>{{ $data->tgl_jt_formatted }}</td>
+                                    <td>{{ $data->no_reg_boa ?? '-' }}</td>
                                     <td>
                                     {{ $data->tgl_bayar ? date('d-m-Y', strtotime($data->tgl_bayar)) : '-' }}
                                 </td>

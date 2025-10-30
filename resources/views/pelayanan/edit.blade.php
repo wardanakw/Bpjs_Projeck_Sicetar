@@ -172,43 +172,43 @@
                     </div> 
  
                     {{-- Kasus Pending --}} 
-                <div class="mb-3"> 
-                    <label for="kasus_pending" class="form-label">Kasus Pending</label> 
-                    <input type="number" class="form-control" id="kasus_pending" name="kasus_pending" 
-                        value="{{ old('kasus_pending', $pelayanan->kasus_pending) }}"> 
-                </div> 
- 
-                <div class="mb-3"> 
-                    <label for="biaya_pending" class="form-label">Biaya Pending</label> 
-                    <input type="number" class="form-control" id="biaya_pending" name="biaya_pending" 
-                        value="{{ old('biaya_pending', $pelayanan->biaya_pending) }}"> 
-                </div> 
- 
-                {{-- Kasus Tidak Layak --}} 
-                <div class="mb-3"> 
-                    <label for="kasus_tidak_layak" class="form-label">Kasus Tidak Layak</label> 
-                    <input type="number" class="form-control" id="kasus_tidak_layak" name="kasus_tidak_layak" 
-                        value="{{ old('kasus_tidak_layak', $pelayanan->kasus_tidak_layak) }}"> 
-                </div> 
- 
-                <div class="mb-3"> 
-                    <label for="biaya_tidak_layak" class="form-label">Biaya Tidak Layak</label> 
-                    <input type="number" class="form-control" id="biaya_tidak_layak" name="biaya_tidak_layak" 
-                        value="{{ old('biaya_tidak_layak', $pelayanan->biaya_tidak_layak) }}"> 
-                </div> 
- 
-                {{-- Kasus Dispute --}} 
-                <div class="mb-3"> 
-                    <label for="kasus_dispute" class="form-label">Kasus Dispute</label> 
-                    <input type="number" class="form-control" id="kasus_dispute" name="kasus_dispute" 
-                        value="{{ old('kasus_dispute', $pelayanan->kasus_dispute) }}"> 
-                </div> 
- 
-                <div class="mb-3">
-<label for="biaya_dispute" class="form-label">Biaya Dispute</label> 
-                    <input type="number" class="form-control" id="biaya_dispute" name="biaya_dispute" 
-                        value="{{ old('biaya_dispute', $pelayanan->biaya_dispute) }}"> 
-                </div> 
+                    <div class="mb-3"> 
+                        <label for="kasus_pending" class="form-label">Kasus Pending</label> 
+                        <input type="number" class="form-control" id="kasus_pending" name="kasus_pending" 
+                            value="{{ old('kasus_pending', $pelayanan->kasus_pending) }}"> 
+                    </div> 
+    
+                    <div class="mb-3"> 
+                        <label for="biaya_pending" class="form-label">Biaya Pending</label> 
+                        <input type="number" class="form-control" id="biaya_pending" name="biaya_pending" 
+                            value="{{ old('biaya_pending', $pelayanan->biaya_pending) }}"> 
+                    </div> 
+    
+                    {{-- Kasus Tidak Layak --}} 
+                    <div class="mb-3"> 
+                        <label for="kasus_tidak_layak" class="form-label">Kasus Tidak Layak</label> 
+                        <input type="number" class="form-control" id="kasus_tidak_layak" name="kasus_tidak_layak" 
+                            value="{{ old('kasus_tidak_layak', $pelayanan->kasus_tidak_layak) }}"> 
+                    </div> 
+    
+                    <div class="mb-3"> 
+                        <label for="biaya_tidak_layak" class="form-label">Biaya Tidak Layak</label> 
+                        <input type="number" class="form-control" id="biaya_tidak_layak" name="biaya_tidak_layak" 
+                            value="{{ old('biaya_tidak_layak', $pelayanan->biaya_tidak_layak) }}"> 
+                    </div> 
+    
+                    {{-- Kasus Dispute --}} 
+                    <div class="mb-3"> 
+                        <label for="kasus_dispute" class="form-label">Kasus Dispute</label> 
+                        <input type="number" class="form-control" id="kasus_dispute" name="kasus_dispute" 
+                            value="{{ old('kasus_dispute', $pelayanan->kasus_dispute) }}"> 
+                    </div> 
+    
+                    <div class="mb-3">
+                        <label for="biaya_dispute" class="form-label">Biaya Dispute</label> 
+                        <input type="number" class="form-control" id="biaya_dispute" name="biaya_dispute" 
+                            value="{{ old('biaya_dispute', $pelayanan->biaya_dispute) }}"> 
+                    </div> 
  
                     {{-- UMK --}} 
                     <div class="mb-3"> 
@@ -223,13 +223,20 @@
                         <input type="text" class="form-control" id="koreksi" name="koreksi" 
                                value="{{ old('koreksi', $pelayanan->koreksi) }}"> 
                     </div> 
- 
+
                     {{-- Tgl Reg BoA --}} 
                     <div class="mb-3"> 
                         <label for="tgl_reg_boa" class="form-label">Tanggal Reg BoA</label> 
                         <input type="date" class="form-control date-input" id="tgl_reg_boa" name="tgl_reg_boa" 
                                value="{{ old('tgl_reg_boa', $pelayanan->tgl_reg_boa) }}"> 
                     </div> 
+                    
+                    <div class="mb-3">
+                        <label for="no_reg_boa" class="form-label">Nomor Register BOA</label>
+                        <input type="text" class="form-control" id="no_reg_boa"
+                            name="no_reg_boa"
+                            value="{{ old('no_reg_boa', $pelayanan->no_reg_boa) }}">
+                    </div>
  
                     {{-- Tgl JT --}} 
                      <div class="mb-3"> 

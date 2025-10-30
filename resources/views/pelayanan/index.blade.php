@@ -72,6 +72,7 @@
                             <th>UMK</th>
                             <th>Koreksi</th>
                             <th>Tanggal Reg BoA</th>
+                            <th>No Register BOA</th>
                             <th>Tanggal Jatuh Tempo</th>
                             <th>Aksi</th>
                         </tr>
@@ -103,6 +104,7 @@
                                         <span class="badge bg-warning">Belum Input</span>
                                     @endif
                                 </td>
+                                <td>{{ $data->no_reg_boa ?? '-' }}</td>
                                 <td>{{ $data->tgl_jt_formatted ?? '' }}</td>
                                 <td>
                                     @if(auth()->user()->role === 'admin')

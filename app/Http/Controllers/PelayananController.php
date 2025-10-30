@@ -263,6 +263,8 @@ class PelayananController extends Controller
         'biaya_tidak_layak' => 'nullable|numeric|min:0',
         'kasus_dispute' => 'nullable|integer|min:0',
         'biaya_dispute' => 'nullable|numeric|min:0',
+        'no_reg_boa' => 'nullable|string|max:50',
+        'tgl_reg_boa' => 'nullable|date',
     ];
 
     if ($request->jenis_pelayanan === 'Alat Kesehatan') {
@@ -293,6 +295,9 @@ class PelayananController extends Controller
     } else {
         $data['max_tgl_bahv'] = null;
     }
+    if (!empty($data['tgl_reg_boa'])) {
+        $data['tgl_reg_boa'] = date('Y-m-d', strtotime($data['tgl_reg_boa']));
+    }
 
     if ($this->isAlkes($data['jenis_pelayanan'])) {
         if (!empty($data['tgl_bahv'])) {
@@ -307,6 +312,16 @@ class PelayananController extends Controller
             $data['tgl_jt'] = null;
         }
     }
+
+     $biayaHv = $data['biaya_hv'] ?? $data['biaya'] ?? 0;
+    $data['total_pembayaran'] = $biayaHv
+        - (
+            ($data['biaya_pending'] ?? 0)
+            + ($data['biaya_tidak_layak'] ?? 0)
+            + ($data['biaya_dispute'] ?? 0)
+            + ($data['umk'] ?? 0)
+            + ($data['koreksi'] ?? 0)
+        );
 
     $pelayanan->update($data);
 
@@ -381,6 +396,16 @@ class PelayananController extends Controller
             $data['tgl_jt'] = null;
         }
     }
+
+    $biayaHv = $data['biaya_hv'] ?? $data['biaya'] ?? 0;
+    $data['total_pembayaran'] = $biayaHv
+        - (
+            ($data['biaya_pending'] ?? 0)
+            + ($data['biaya_tidak_layak'] ?? 0)
+            + ($data['biaya_dispute'] ?? 0)
+            + ($data['umk'] ?? 0)
+            + ($data['koreksi'] ?? 0)
+        );
 
     Pelayanan::create($data);
 
