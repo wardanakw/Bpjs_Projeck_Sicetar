@@ -313,15 +313,14 @@ class PelayananController extends Controller
         }
     }
 
-     $biayaHv = $data['biaya_hv'] ?? $data['biaya'] ?? 0;
-    $data['total_pembayaran'] = $biayaHv
-        - (
-            ($data['biaya_pending'] ?? 0)
-            + ($data['biaya_tidak_layak'] ?? 0)
-            + ($data['biaya_dispute'] ?? 0)
-            + ($data['umk'] ?? 0)
-            + ($data['koreksi'] ?? 0)
-        );
+    $biayaHv = $data['biaya_hv'] ?? $data['biaya'] ?? 0;
+    $pending = $data['biaya_pending'] ?? 0;
+    $tl = $data['biaya_tidak_layak'] ?? 0;
+    $dispute = $data['biaya_dispute'] ?? 0;
+    $umk = $data['umk'] ?? 0;
+    $koreksi = $data['koreksi'] ?? 0;
+
+    $data['total_pembayaran'] = $biayaHv - ($pending + $tl + $dispute + $umk + $koreksi);
 
     $pelayanan->update($data);
 
@@ -398,14 +397,13 @@ class PelayananController extends Controller
     }
 
     $biayaHv = $data['biaya_hv'] ?? $data['biaya'] ?? 0;
-    $data['total_pembayaran'] = $biayaHv
-        - (
-            ($data['biaya_pending'] ?? 0)
-            + ($data['biaya_tidak_layak'] ?? 0)
-            + ($data['biaya_dispute'] ?? 0)
-            + ($data['umk'] ?? 0)
-            + ($data['koreksi'] ?? 0)
-        );
+    $pending = $data['biaya_pending'] ?? 0;
+    $tl = $data['biaya_tidak_layak'] ?? 0;
+    $dispute = $data['biaya_dispute'] ?? 0;
+    $umk = $data['umk'] ?? 0;
+    $koreksi = $data['koreksi'] ?? 0;
+
+    $data['total_pembayaran'] = $biayaHv - ($pending + $tl + $dispute + $umk + $koreksi);
 
     Pelayanan::create($data);
 

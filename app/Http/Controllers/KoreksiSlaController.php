@@ -72,6 +72,7 @@ class KoreksiSlaController extends Controller
             'tgl_bayar' => 'nullable|date',
             'memorial' => 'nullable|string|max:255',
             'voucher' => 'nullable|string|max:255',
+            'no_reg_boa' => 'nullable|string|max:50',
         ]);
 
         $pelayanan = Pelayanan::findOrFail($id);
@@ -82,6 +83,7 @@ class KoreksiSlaController extends Controller
             'tgl_bayar' => $request->tgl_bayar,
             'memorial' => $request->memorial,
             'voucher' => $request->voucher,
+            'no_reg_boa' => $request->no_reg_boa,
         ]);
 
         return redirect()->route('koreksi.index')
@@ -111,38 +113,5 @@ class KoreksiSlaController extends Controller
             ->with('success', 'Data berhasil dikembalikan ke monitoring SLA.');
     }
 
-    
-    // public function tambahBayar($id)
-    // {
-     
-    //     if (!in_array(Auth::user()->role, ['admin', 'finance'])) {
-    //         return redirect()->route('koreksi-sla.index')
-    //             ->with('error', 'Anda tidak memiliki akses untuk menambah tanggal bayar.');
-    //     }
-
-    //     $pelayanan = Pelayanan::findOrFail($id);
-    //     return view('koreksi-sla.tambah-bayar', compact('pelayanan'));
-    // }
-
-    // public function simpanBayar(Request $request, $id)
-    // {
-    //     // Hanya finance yang bisa simpan tanggal bayar
-    //     if (!in_array(Auth::user()->role, ['admin', 'finance'])) {
-    //         return redirect()->route('koreksi-sla.index')
-    //             ->with('error', 'Anda tidak memiliki akses untuk menyimpan tanggal bayar.');
-    //     }
-
-    //     $request->validate([
-    //         'tgl_bayar' => 'required|date',
-    //     ]);
-
-    //     $pelayanan = Pelayanan::findOrFail($id);
-    //     $pelayanan->update([
-    //         'tgl_bayar' => $request->tgl_bayar,
-    //     ]);
-
-    //     return redirect()->route('koreksi-sla.index')
-    //         ->with('success', 'Tanggal bayar berhasil ditambahkan.');
-    // }
 
 }

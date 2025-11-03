@@ -196,6 +196,13 @@
                         </div>
 
                         <div class="mb-3">
+                        <label for="no_reg_boa" class="form-label">Nomor Register BOA</label>
+                        <input type="text" class="form-control" id="no_reg_boa"
+                            name="no_reg_boa"
+                            value="{{ old('no_reg_boa', $pelayanan->no_reg_boa) }}">
+                    </div>
+                    
+                        <div class="mb-3">
                             <label for="tgl_bayar" class="form-label">Tanggal Bayar</label>
                             <input type="date" class="form-control date-input" id="tgl_bayar" name="tgl_bayar"
                                    value="{{ old('tgl_bayar', $pelayanan->tgl_bayar) }}">
