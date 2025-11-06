@@ -17,6 +17,7 @@ class Pelayanan extends Model
         'jenis_pelayanan',
         'jumlah_kasus',
         'biaya',
+        'total_pembayaran', 
         'no_reg_boa',       
         'tgl_bast',
         'no_bast',
@@ -44,7 +45,7 @@ class Pelayanan extends Model
         'biaya_dispute',
     ];
 
-
+   
     public function getTotalPembayaranAttribute()
     {
         $biayaHv = $this->biaya_hv ?? $this->biaya ?? 0;
