@@ -279,7 +279,7 @@ class PelayananController extends Controller
 
         $request->validate($validationRules);
 
-        $data = $request->except(['alat_kesehatan']);
+        $data = $request->except(['alat_kesehatan', 'total_pembayaran']); // HAPUS total_pembayaran
         $pelayanan = Pelayanan::findOrFail($id);
 
         if ($request->jenis_pelayanan === 'Alat Kesehatan') {
@@ -320,14 +320,6 @@ class PelayananController extends Controller
             }
         }
 
-        $biayaHv = (float) ($data['biaya_hv'] ?? $data['biaya'] ?? 0);
-        $pending = (float) ($data['biaya_pending'] ?? 0);
-        $tl = (float) ($data['biaya_tidak_layak'] ?? 0);
-        $dispute = (float) ($data['biaya_dispute'] ?? 0);
-        $umk = (float) ($data['umk'] ?? 0);
-        $koreksi = (float) ($data['koreksi'] ?? 0);
-
-        $data['total_pembayaran'] = $biayaHv - ($pending + $tl + $dispute + $umk + $koreksi);
 
         $pelayanan->update($data);
 
@@ -372,7 +364,7 @@ class PelayananController extends Controller
 
         $request->validate($validationRules);
 
-        $data = $request->all();
+        $data = $request->except(['alat_kesehatan', 'total_pembayaran']); // HAPUS total_pembayaran
         
         if ($request->jenis_pelayanan === 'Alat Kesehatan') {
             $data['jenis_pelayanan'] = $request->alat_kesehatan;
@@ -406,15 +398,6 @@ class PelayananController extends Controller
             }
         }
 
-        // PERHITUNGAN MANUAL TOTAL_PEMBAYARAN
-        $biayaHv = (float) ($data['biaya_hv'] ?? $data['biaya'] ?? 0);
-        $pending = (float) ($data['biaya_pending'] ?? 0);
-        $tl = (float) ($data['biaya_tidak_layak'] ?? 0);
-        $dispute = (float) ($data['biaya_dispute'] ?? 0);
-        $umk = (float) ($data['umk'] ?? 0);
-        $koreksi = (float) ($data['koreksi'] ?? 0);
-
-        $data['total_pembayaran'] = $biayaHv - ($pending + $tl + $dispute + $umk + $koreksi);
 
         Pelayanan::create($data);
 
