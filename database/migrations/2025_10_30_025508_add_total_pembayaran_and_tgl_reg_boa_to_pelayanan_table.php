@@ -8,14 +8,15 @@ return new class extends Migration {
     public function up(): void
     {
         Schema::table('pelayanan', function (Blueprint $table) {
-            $table->dropColumn('total_pembayaran');
+            $table->decimal('total_pembayaran', 15, 2)->nullable()->after('biaya');
+            $table->date('no_reg_boa')->nullable()->after('total_pembayaran');
         });
     }
 
     public function down(): void
     {
         Schema::table('pelayanan', function (Blueprint $table) {
-            $table->decimal('total_pembayaran', 15, 2)->nullable();
+            $table->dropColumn(['total_pembayaran', 'no_reg_boa']);
         });
     }
 };
