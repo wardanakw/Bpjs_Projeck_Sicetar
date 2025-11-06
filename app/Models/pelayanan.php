@@ -45,4 +45,16 @@ class Pelayanan extends Model
         'biaya_dispute',
     ];
 
+   
+    public function getTotalPembayaranAttribute()
+    {
+        $biayaHv = $this->biaya_hv ?? $this->biaya ?? 0;
+        $pending = $this->biaya_pending ?? 0;
+        $tdkLayak = $this->biaya_tidak_layak ?? 0;
+        $dispute = $this->biaya_dispute ?? 0;
+        $umk = $this->umk ?? 0;
+        $koreksi = $this->koreksi ?? 0;
+
+        return $biayaHv - ($pending + $tdkLayak + $dispute + $umk + $koreksi);
+    }
 }
