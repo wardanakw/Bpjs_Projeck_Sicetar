@@ -220,7 +220,7 @@
                     {{-- Koreksi --}} 
                     <div class="mb-3"> 
                         <label for="koreksi" class="form-label">Koreksi</label> 
-                        <input type="text" class="form-control" id="koreksi" name="koreksi" 
+                        <input type="number" class="form-control" id="koreksi" name="koreksi" 
                                value="{{ old('koreksi', $pelayanan->koreksi) }}"> 
                     </div> 
 
