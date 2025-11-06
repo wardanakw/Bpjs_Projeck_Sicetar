@@ -44,7 +44,7 @@ class Pelayanan extends Model
         'biaya_dispute',
     ];
 
-    // ACCESSOR TETAP ADA - menghitung secara dinamis
+
     public function getTotalPembayaranAttribute()
     {
         $biayaHv = $this->biaya_hv ?? $this->biaya ?? 0;
