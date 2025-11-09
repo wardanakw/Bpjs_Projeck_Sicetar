@@ -313,15 +313,6 @@ class PelayananController extends Controller
         }
     }
 
-    $biayaHv = $data['biaya_hv'] ?? $data['biaya'] ?? 0;
-    $pending = $data['biaya_pending'] ?? 0;
-    $tl = $data['biaya_tidak_layak'] ?? 0;
-    $dispute = $data['biaya_dispute'] ?? 0;
-    $umk = $data['umk'] ?? 0;
-    $koreksi = $data['koreksi'] ?? 0;
-
-    $data['total_pembayaran'] = $biayaHv - ($pending + $tl + $dispute + $umk + $koreksi);
-
     $pelayanan->update($data);
 
     return redirect()->route('pelayanan.index')
@@ -395,15 +386,6 @@ class PelayananController extends Controller
             $data['tgl_jt'] = null;
         }
     }
-
-    $biayaHv = $data['biaya_hv'] ?? $data['biaya'] ?? 0;
-    $pending = $data['biaya_pending'] ?? 0;
-    $tl = $data['biaya_tidak_layak'] ?? 0;
-    $dispute = $data['biaya_dispute'] ?? 0;
-    $umk = $data['umk'] ?? 0;
-    $koreksi = $data['koreksi'] ?? 0;
-
-    $data['total_pembayaran'] = $biayaHv - ($pending + $tl + $dispute + $umk + $koreksi);
 
     Pelayanan::create($data);
 
