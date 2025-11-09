@@ -175,32 +175,45 @@
 <script>
     $.fn.dataTable.ext.errMode = 'none';
     
-    $(document).ready(function() {
-        $('#koreksiSlaTable').DataTable({
-            "paging": true,
-            "lengthChange": false,
-            "searching": true,
-            "ordering": true,
-            "info": true,
-            "autoWidth": false,
-            "responsive": true,
-            "language": {
-                "emptyTable": "Tidak ada data koreksi yang ditemukan",
-                "zeroRecords": "Tidak ada data koreksi yang ditemukan",
-                "search": "Cari:",
-                "lengthMenu": "Tampilkan _MENU_ entri",
-                "info": "Menampilkan _START_ hingga _END_ dari _TOTAL_ entri",
-                "infoEmpty": "Menampilkan 0 hingga 0 dari 0 entri",
-                "infoFiltered": "(disaring dari _MAX_ total entri)",
-                "paginate": {
-                    "first": "Pertama",
-                    "last": "Terakhir", 
-                    "next": "Selanjutnya",
-                    "previous": "Sebelumnya"
-                }
+  $(document).ready(function() {
+    let table = $('#koreksiSlaTable').DataTable({
+        "paging": true,
+        "lengthChange": false,
+        "searching": true,
+        "ordering": true,
+        "info": true,
+        "autoWidth": false,
+        "responsive": true,
+        "language": {
+            "emptyTable": "Tidak ada data koreksi yang ditemukan",
+            "zeroRecords": "Tidak ada data koreksi yang ditemukan",
+            "search": "Cari:",
+            "lengthMenu": "Tampilkan _MENU_ entri",
+            "info": "Menampilkan _START_ hingga _END_ dari _TOTAL_ entri",
+            "infoEmpty": "Menampilkan 0 hingga 0 dari 0 entri",
+            "infoFiltered": "(disaring dari _MAX_ total entri)",
+            "paginate": {
+                "first": "Pertama",
+                "last": "Terakhir", 
+                "next": "Selanjutnya",
+                "previous": "Sebelumnya"
             }
-        });
+        }
     });
+
+       table.on('draw.dt', function () {
+        if (table.data().count() === 0) {
+            $('#koreksiSlaTable tbody').html(`
+                <tr>
+                    <td colspan="30" class="text-center text-muted">
+                        Tidak ada data yang ditemukan
+                    </td>
+                </tr>
+            `);
+        }
+    });
+});
+
 
 document.addEventListener('DOMContentLoaded', function () {
     const deleteForms = document.querySelectorAll('.form-delete');
@@ -237,17 +250,6 @@ document.addEventListener('DOMContentLoaded', function () {
     @endif
 });
 
- $('#koreksiSlaTable').on('draw.dt', function () {
-        if (table.data().count() === 0) {
-            $('#koreksiSlaTable tbody').html(`
-                <tr>
-                    <td colspan="23" class="text-center text-muted">
-                        Tidak ada data yang ditemukan
-                    </td>
-                </tr>
-            `);
-        }
-    });
 
 </script>
 @endsection

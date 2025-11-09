@@ -282,9 +282,9 @@ class PelayananController extends Controller
         $data['jenis_pelayanan'] = $request->jenis_pelayanan;
     }
 
-    if ($request->bulan_pelayanan) {
-        $data['bulan_pelayanan'] = $request->bulan_pelayanan . '-01';
-    }
+    if (!empty($request->bulan_pelayanan) && strlen($request->bulan_pelayanan) === 7) {
+    $data['bulan_pelayanan'] = $request->bulan_pelayanan . '-01';
+}
 
     if (!empty($data['tgl_bast'])) {
         $data['max_tgl_bakb'] = date('Y-m-d', strtotime($data['tgl_bast'] . ' +9 days'));
@@ -313,7 +313,24 @@ class PelayananController extends Controller
         }
     }
 
-    $pelayanan->update($data);
+    $toFloat = function($val) {
+    if ($val === null || $val === '') return 0.0;
+    $v = str_replace(['.', ','], ['', '.'], (string)$val);
+    return floatval($v);
+};
+
+$biayaHv = $toFloat($data['biaya_hv'] ?? $data['biaya'] ?? 0);
+$pending  = $toFloat($data['biaya_pending'] ?? 0);
+$tl       = $toFloat($data['biaya_tidak_layak'] ?? 0);
+$dispute  = $toFloat($data['biaya_dispute'] ?? 0);
+$umk      = $toFloat($data['umk'] ?? 0);
+$koreksi  = $toFloat($data['koreksi'] ?? 0);
+
+$total = $biayaHv - ($pending + $tl + $dispute + $umk + $koreksi);
+$data['total_pembayaran'] = round($total, 2);
+
+$pelayanan->update($data);
+
 
     return redirect()->route('pelayanan.index')
         ->with('success', 'Data berhasil diperbarui.');
