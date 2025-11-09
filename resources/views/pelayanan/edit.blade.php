@@ -224,6 +224,13 @@
                                value="{{ old('koreksi', $pelayanan->koreksi) }}"> 
                     </div> 
 
+                    {{-- Total Pembayaran --}} 
+                    <div class="mb-3"> 
+                        <label for="total_pembayaran" class="form-label">Total Pembayaran</label> 
+                        <input type="number" class="form-control" id="total_pembayaran" name="total_pembayaran" 
+                               value="{{ old('total_pembayaran', $pelayanan->total_pembayaran) }}"> 
+                    </div> 
+
                     {{-- Tgl Reg BoA --}} 
                     <div class="mb-3"> 
                         <label for="tgl_reg_boa" class="form-label">Tanggal Reg BoA</label> 
