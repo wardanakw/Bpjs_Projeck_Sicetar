@@ -45,45 +45,8 @@ class Pelayanan extends Model
         'biaya_dispute',
     ];
 
-
-    public function setBiayaHvAttribute($value)
-    {
-        $this->attributes['biaya_hv'] = $value;
-        $this->calculateTotalPembayaran();
-    }
-
-    public function setBiayaPendingAttribute($value)
-    {
-        $this->attributes['biaya_pending'] = $value;
-        $this->calculateTotalPembayaran();
-    }
-
-    public function setBiayaTidakLayakAttribute($value)
-    {
-        $this->attributes['biaya_tidak_layak'] = $value;
-        $this->calculateTotalPembayaran();
-    }
-
-    public function setBiayaDisputeAttribute($value)
-    {
-        $this->attributes['biaya_dispute'] = $value;
-        $this->calculateTotalPembayaran();
-    }
-
-    public function setUmkAttribute($value)
-    {
-        $this->attributes['umk'] = $value;
-        $this->calculateTotalPembayaran();
-    }
-
-    public function setKoreksiAttribute($value)
-    {
-        $this->attributes['koreksi'] = $value;
-        $this->calculateTotalPembayaran();
-    }
-
-    // Method untuk menghitung total pembayaran
-    protected function calculateTotalPembayaran()
+   
+    public function getTotalPembayaranAttribute()
     {
         $biayaHv = $this->biaya_hv ?? $this->biaya ?? 0;
         $pending = $this->biaya_pending ?? 0;
@@ -92,6 +55,6 @@ class Pelayanan extends Model
         $umk = $this->umk ?? 0;
         $koreksi = $this->koreksi ?? 0;
 
-        $this->attributes['total_pembayaran'] = $biayaHv - ($pending + $tdkLayak + $dispute + $umk + $koreksi);
+        return $biayaHv - ($pending + $tdkLayak + $dispute + $umk + $koreksi);
     }
 }
