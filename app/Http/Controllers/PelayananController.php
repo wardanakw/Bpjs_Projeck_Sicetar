@@ -263,6 +263,7 @@ class PelayananController extends Controller
         'biaya_tidak_layak' => 'nullable|numeric|min:0',
         'kasus_dispute' => 'nullable|integer|min:0',
         'biaya_dispute' => 'nullable|numeric|min:0',
+         'total_pembayaran' => 'nullable|numeric|min:0',
         'no_reg_boa' => 'nullable|string|max:50',
         'tgl_reg_boa' => 'nullable|date',
     ];
@@ -312,22 +313,6 @@ class PelayananController extends Controller
             $data['tgl_jt'] = null;
         }
     }
-
-    $toFloat = function($val) {
-    if ($val === null || $val === '') return 0.0;
-    $v = str_replace(['.', ','], ['', '.'], (string)$val);
-    return floatval($v);
-};
-
-$biayaHv = $toFloat($data['biaya_hv'] ?? $data['biaya'] ?? 0);
-$pending  = $toFloat($data['biaya_pending'] ?? 0);
-$tl       = $toFloat($data['biaya_tidak_layak'] ?? 0);
-$dispute  = $toFloat($data['biaya_dispute'] ?? 0);
-$umk      = $toFloat($data['umk'] ?? 0);
-$koreksi  = $toFloat($data['koreksi'] ?? 0);
-
-$total = $biayaHv - ($pending + $tl + $dispute + $umk + $koreksi);
-$data['total_pembayaran'] = round($total, 2);
 
 $pelayanan->update($data);
 
