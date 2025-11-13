@@ -181,13 +181,6 @@
                                    value="{{ old('koreksi', $pelayanan->koreksi) }}" required>
                         </div>
 
-                        {{-- Total Pembayaran --}} 
-                        <div class="mb-3"> 
-                            <label for="total_pembayaran" class="form-label">Total Pembayaran</label> 
-                            <input type="number" class="form-control" id="total_pembayaran" name="total_pembayaran" 
-                                value="{{ old('total_pembayaran', $pelayanan->total_pembayaran) }}"> 
-                        </div> 
-
                         {{-- Tgl Reg BoA --}}
                         <div class="mb-3">
                             <label for="tgl_reg_boa" class="form-label">Tanggal Reg BoA</label>
@@ -201,13 +194,6 @@
                             <input type="date" class="form-control date-input" id="tgl_jt" name="tgl_jt"
                                    value="{{ old('tgl_jt', $pelayanan->tgl_jt) }}">
                         </div>
-
-                        <div class="mb-3">
-                        <label for="no_reg_boa" class="form-label">Nomor Register BOA</label>
-                        <input type="text" class="form-control" id="no_reg_boa"
-                            name="no_reg_boa"
-                            value="{{ old('no_reg_boa', $pelayanan->no_reg_boa) }}">
-                    </div>
                     
                         <div class="mb-3">
                             <label for="tgl_bayar" class="form-label">Tanggal Bayar</label>
