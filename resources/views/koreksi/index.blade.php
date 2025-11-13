@@ -60,9 +60,7 @@
                             <th>Biaya Dispute</th>
                             <th>UMK</th>
                             <th>Koreksi</th>
-                            <th>Total Pembayaran</th>
                             <th>Tanggal Reg BoA</th>
-                            <th>No Register BOA</th>
                             <th>Tanggal Jatuh Tempo</th>
                             <th>Tanggal Bayar</th>
                             <th>Voucher</th>
@@ -96,7 +94,6 @@
                                 <td>Rp. {{ number_format($data->biaya_dispute, 0, ',', '.') }}</td>
                                 <td>Rp. {{ number_format($data->umk, 0, ',', '.') }}</td>
                                 <td>Rp. {{ number_format($data->koreksi, 0, ',', '.') }}</td>
-                                <td>Rp {{ number_format($data->total_pembayaran, 0, ',', '.') }}</td>
                                 <td>
                                     @if($data->tgl_reg_boa)
                                         <span class="badge bg-success">{{ date('d-m-Y', strtotime($data->tgl_reg_boa)) }}</span>
@@ -104,7 +101,6 @@
                                         <span class="badge bg-secondary">-</span>
                                     @endif
                                 </td>
-                                <td>{{ $data->no_reg_boa ?? '-' }}</td>
                                 <td>{{ $data->tgl_jt_formatted ?? '' }}</td>
                                 <td>
                                     {{ $data->tgl_bayar ? date('d-m-Y', strtotime($data->tgl_bayar)) : '-' }}
